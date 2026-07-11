@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
@@ -114,6 +115,8 @@ export default function AdminPage() {
     const [editingGame, setEditingGame] = useState<Game | null>(null);
 
     const [search, setSearch] = useState("");
+
+
 
     // =====================
     // BASIC INFORMATION
@@ -246,6 +249,22 @@ export default function AdminPage() {
     useEffect(() => {
         loadGames();
     }, []);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        async function checkAuth() {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+
+            if (!session) {
+                router.replace("/login");
+            }
+        }
+
+        checkAuth();
+    }, [router]);
 
     // =====================
     // LOAD GAMES
@@ -604,7 +623,7 @@ export default function AdminPage() {
             resetForm();
             loadGames();
             loadBlogs();
-           
+
         }, []);
     }
     // =====================
