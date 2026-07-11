@@ -1,7 +1,9 @@
 import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import type { Metadata } from "next";
 import Image from "next/image";
+import Footer from "@/components/Footer";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -9,7 +11,21 @@ type Props = {
         slug: string;
     }>;
 };
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
 
+    const { slug } = await params;
+
+    const category = decodeURIComponent(slug);
+
+    return {
+        title: `${category} MOD APK Games`,
+        description: `Download latest ${category} MOD APK games with unlimited money, premium unlocked and ad-free features.`,
+    };
+}
 export default async function CategoryPage({
     params,
 }: Props) {
@@ -21,9 +37,8 @@ export default async function CategoryPage({
     const { data: games } = await supabase
         .from("games")
         .select("*")
-        .eq("category", category)
+        .ilike("category", `%${category}%`)
         .order("updated_at", { ascending: false });
-
     if (!games || games.length === 0) {
         notFound();
     }
@@ -227,6 +242,7 @@ export default async function CategoryPage({
                     </section>
 
                 </div>
+                <Footer />
 
             </main>
 

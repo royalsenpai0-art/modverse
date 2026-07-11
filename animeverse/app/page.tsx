@@ -2,12 +2,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
+import Hero from "@/components/Hero";
+import WhatsAppSticky from "@/components/WhatsAppSticky";
 import { supabase } from "@/lib/supabase";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default async function Home() {
 
-  // ================= HERO GAME =================
-
+  // ================= DATA FETCHING =================
   const { data: heroGame } = await supabase
     .from("games")
     .select("*")
@@ -15,39 +17,23 @@ export default async function Home() {
     .limit(1)
     .single();
 
-  // ================= FEATURED =================
-
-  const { data: featuredGames } = await supabase
+  const { data: latestGames } = await supabase
     .from("games")
     .select("*")
-    .eq("featured", true)
-    .limit(10);
-
-  // ================= TRENDING =================
-
-  const { data: trendingGames } = await supabase
-    .from("games")
-    .select("*")
-    .eq("trending", true)
-    .limit(10);
-
-  // ================= POPULAR =================
+    .order("updated_at", { ascending: false })
+    .limit(6);
 
   const { data: popularGames } = await supabase
     .from("games")
     .select("*")
     .eq("popular", true)
-    .limit(10);
+    .limit(6);
 
-  // ================= LATEST =================
-
-  const { data: latestGames } = await supabase
+  const { data: trendingGames } = await supabase
     .from("games")
     .select("*")
-    .order("updated_at", { ascending: false })
-    .limit(10);
-
-  // ================= TOTAL GAMES =================
+    .eq("trending", true)
+    .limit(6);
 
   const { count: totalGames } = await supabase
     .from("games")
@@ -57,518 +43,94 @@ export default async function Home() {
     <>
       <Header />
 
-      <main className="min-h-screen bg-[#090909] text-white">
-        {/* ================= PREMIUM HERO ================= */}
+      <Hero />
 
-        <section className="relative overflow-hidden border-b border-zinc-800">
+      <main className="min-h-screen bg-[#0a0a0a] text-white">
+        {/* ================= HERO ================= */}
 
-          {/* Background */}
+        {/* ================= LATEST GAMES ================= */}
 
-          <div className="absolute inset-0">
+        <section className="mx-auto max-w-7xl px-4 py-10">
 
-            <div className="absolute -left-40 top-0 h-[450px] w-[450px] rounded-full bg-orange-500/20 blur-[150px]" />
-
-            <div className="absolute right-0 top-32 h-[350px] w-[350px] rounded-full bg-red-500/20 blur-[150px]" />
-
-            <div className="absolute bottom-0 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-yellow-500/10 blur-[140px]" />
-
-          </div>
-
-          <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-6 py-20 lg:grid-cols-2">
-
-            {/* LEFT */}
+          <div className="mb-6 flex items-center justify-between">
 
             <div>
 
-              <span className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-5 py-2 text-sm font-bold text-orange-400">
+              <p className="text-sm font-bold uppercase tracking-[3px] text-orange-500">
 
-                🔥 Updated Every Day
-
-              </span>
-
-              <h1 className="mt-8 text-5xl font-black leading-tight lg:text-7xl">
-
-                Download
-
-                <span className="block bg-gradient-to-r from-orange-400 via-red-500 to-yellow-400 bg-clip-text text-transparent">
-
-                  MOD APK
-
-                </span>
-
-                Games
-
-              </h1>
-
-              <p className="mt-8 max-w-xl text-lg leading-8 text-zinc-400">
-
-                Download the latest Android MOD APK games with
-                Unlimited Money, Premium Unlocked, No Ads,
-                God Mode and many more features.
+                Latest Collection
 
               </p>
 
-              <div className="mt-10 flex flex-wrap gap-4">
+              <h2 className="mt-1 text-2xl font-black text-white md:text-4xl">
 
-                <Link
-                  href="/featured"
-                  className="rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 px-8 py-4 font-bold transition hover:scale-105"
-                >
-
-                  🚀 Explore Games
-
-                </Link>
-
-                <Link
-                  href="/recently-updated"
-                  className="rounded-2xl border border-zinc-700 bg-zinc-900 px-8 py-4 font-bold hover:border-orange-500"
-                >
-
-                  ⭐ Latest Updates
-
-                </Link>
-
-              </div>
-
-              {/* Stats */}
-
-              <div className="mt-14 grid grid-cols-3 gap-5">
-
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-
-                  <h2 className="text-3xl font-black text-orange-400">
-
-                    {totalGames || "500+"}
-
-                  </h2>
-
-                  <p className="mt-2 text-zinc-400">
-
-                    Games
-
-                  </p>
-
-                </div>
-
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-
-                  <h2 className="text-3xl font-black text-red-400">
-
-                    Daily
-
-                  </h2>
-
-                  <p className="mt-2 text-zinc-400">
-
-                    Updates
-
-                  </p>
-
-                </div>
-
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-
-                  <h2 className="text-3xl font-black text-yellow-400">
-
-                    100%
-
-                  </h2>
-
-                  <p className="mt-2 text-zinc-400">
-
-                    Safe
-
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-            {/* RIGHT */}
-
-            <div className="relative">
-
-              {/* Glow */}
-
-              <div className="absolute -right-10 -top-10 h-72 w-72 rounded-full bg-orange-500/20 blur-[120px]" />
-
-              <div className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-xl">
-
-                {/* Banner */}
-
-                <div className="relative h-72 w-full overflow-hidden">
-
-                  <Image
-                    src={heroGame?.banner || heroGame?.icon || "/placeholder.png"}
-                    alt={heroGame?.title || "Featured Game"}
-                    fill
-                    priority
-                    className="object-cover"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-                  <span className="absolute left-5 top-5 rounded-full bg-orange-500 px-4 py-2 text-sm font-bold">
-
-                    ⭐ FEATURED
-
-                  </span>
-
-                </div>
-
-                {/* Content */}
-
-                <div className="p-6">
-
-                  <div className="flex items-center gap-4">
-
-                    <Image
-                      src={heroGame?.icon || "/placeholder.png"}
-                      alt={heroGame?.title || ""}
-                      width={80}
-                      height={80}
-                      className="rounded-2xl border border-zinc-700"
-                    />
-
-                    <div>
-
-                      <h2 className="text-2xl font-black">
-
-                        {heroGame?.title}
-
-                      </h2>
-
-                      <p className="mt-1 text-orange-400">
-
-                        {heroGame?.category}
-
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  <p className="mt-5 line-clamp-3 leading-7 text-zinc-400">
-
-                    {heroGame?.description}
-
-                  </p>
-
-                  {/* Stats */}
-
-                  <div className="mt-6 grid grid-cols-3 gap-3">
-
-                    <div className="rounded-xl bg-zinc-800 p-4 text-center">
-
-                      <p className="text-xl font-bold text-yellow-400">
-
-                        ⭐ {heroGame?.rating || 5}
-
-                      </p>
-
-                      <p className="mt-1 text-xs text-zinc-500">
-
-                        Rating
-
-                      </p>
-
-                    </div>
-
-                    <div className="rounded-xl bg-zinc-800 p-4 text-center">
-
-                      <p className="text-xl font-bold text-green-400">
-
-                        {heroGame?.version}
-
-                      </p>
-
-                      <p className="mt-1 text-xs text-zinc-500">
-
-                        Version
-
-                      </p>
-
-                    </div>
-
-                    <div className="rounded-xl bg-zinc-800 p-4 text-center">
-
-                      <p className="text-xl font-bold text-blue-400">
-
-                        {heroGame?.size}
-
-                      </p>
-
-                      <p className="mt-1 text-xs text-zinc-500">
-
-                        Size
-
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  {/* Buttons */}
-
-                  <div className="mt-8 flex gap-4">
-
-                    <Link
-                      href={`/game/${heroGame?.slug}`}
-                      className="flex-1 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 py-4 text-center font-bold transition hover:scale-105"
-                    >
-
-                      Download Now
-
-                    </Link>
-
-                    <Link
-                      href="/featured"
-                      className="rounded-2xl border border-zinc-700 px-6 py-4 font-bold transition hover:border-orange-500"
-                    >
-
-                      View All
-
-                    </Link>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-        {/* ================= FEATURED GAMES ================= */}
-
-        <section className="mx-auto max-w-7xl px-6 py-20">
-
-          <div className="mb-10 flex items-center justify-between">
-
-            <div>
-
-              <span className="text-sm font-bold uppercase tracking-widest text-orange-500">
-
-                Featured Collection
-
-              </span>
-
-              <h2 className="mt-2 text-4xl font-black">
-
-                ⭐ Featured Games
+                Latest Games
 
               </h2>
-
-              <p className="mt-2 text-zinc-400">
-
-                Hand-picked premium MOD APK games.
-
-              </p>
 
             </div>
 
             <Link
-              href="/featured"
-              className="rounded-xl border border-orange-500 px-5 py-3 font-bold transition hover:bg-orange-500"
+              href="/latest"
+              className="rounded-xl border border-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-500"
             >
-
-              View All →
-
+              View All
             </Link>
 
           </div>
 
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
 
-            {featuredGames?.map((game) => (
-
-              <Link
-                key={game.id}
-                href={`/game/${game.slug}`}
-                className="group overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900 transition duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20"
-              >
-
-                {/* Image */}
-
-                <div className="relative aspect-[3/4] overflow-hidden">
-
-                  <Image
-                    src={game.banner || game.icon || "/placeholder.png"}
-                    alt={game.title}
-                    fill
-                    sizes="(max-width:768px) 50vw,(max-width:1200px) 33vw,20vw"
-                    className="object-cover transition duration-500 group-hover:scale-110"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-                  <div className="absolute left-3 top-3 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold">
-
-                    MOD
-
-                  </div>
-
-                  <div className="absolute right-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-bold">
-
-                    ⭐ {game.rating || "5.0"}
-
-                  </div>
-
-                </div>
-
-                {/* Content */}
-
-                <div className="p-4">
-
-                  <h3 className="line-clamp-2 min-h-[52px] text-lg font-bold">
-
-                    {game.title}
-
-                  </h3>
-
-                  <p className="mt-2 text-sm text-zinc-400">
-
-                    {game.category}
-
-                  </p>
-
-                  <div className="mt-4 flex items-center justify-between">
-
-                    <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs">
-
-                      {game.version}
-
-                    </span>
-
-                    <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs">
-
-                      {game.size}
-
-                    </span>
-
-                  </div>
-
-                  <div className="mt-5 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 py-3 text-center font-bold transition group-hover:scale-105">
-
-                    Download APK
-
-                  </div>
-
-                </div>
-
-              </Link>
-
-            ))}
-
-          </div>
-
-        </section>
-        {/* ================= TRENDING GAMES ================= */}
-
-        <section className="mx-auto max-w-7xl px-6 py-20">
-
-          <div className="mb-10 flex items-center justify-between">
-
-            <div>
-
-              <span className="text-sm font-bold uppercase tracking-widest text-red-500">
-
-                Hot Right Now
-
-              </span>
-
-              <h2 className="mt-2 text-4xl font-black">
-
-                🔥 Trending Games
-
-              </h2>
-
-              <p className="mt-2 text-zinc-400">
-
-                Most downloaded games this week.
-
-              </p>
-
-            </div>
-
-            <Link
-              href="/trending"
-              className="rounded-xl border border-red-500 px-5 py-3 font-bold transition hover:bg-red-500"
-            >
-              View All →
-            </Link>
-
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-
-            {trendingGames?.map((game, index) => (
+            {latestGames?.map((game) => (
 
               <Link
                 key={game.id}
                 href={`/game/${game.slug}`}
-                className="group flex overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900 transition duration-300 hover:border-red-500 hover:shadow-xl hover:shadow-red-500/20"
+                className="group rounded-2xl border border-zinc-800 bg-[#111111] p-3 transition-all duration-300 hover:border-orange-500 hover:bg-zinc-900"
               >
 
-                {/* Image */}
+                <div className="flex items-center gap-3">
 
-                <div className="relative h-44 w-40 flex-shrink-0 overflow-hidden">
+                  {/* Icon */}
 
                   <Image
-                    src={game.banner || game.icon || "/placeholder.png"}
+                    src={game.icon || "/placeholder.png"}
                     alt={game.title}
-                    fill
-                    className="object-cover transition duration-500 group-hover:scale-110"
+                    width={60}
+                    height={60}
+                    className="h-[60px] w-[60px] rounded-2xl border border-zinc-700 object-cover md:h-[72px] md:w-[72px]"
                   />
 
-                  <div className="absolute left-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-bold">
+                  {/* Content */}
 
-                    #{index + 1}
+                  <div className="min-w-0 flex-1">
 
-                  </div>
-
-                </div>
-
-                {/* Content */}
-
-                <div className="flex flex-1 flex-col justify-between p-5">
-
-                  <div>
-
-                    <h3 className="line-clamp-2 text-2xl font-black">
+                    <h3 className="line-clamp-2 text-[15px] font-bold leading-5 text-white md:text-lg">
 
                       {game.title}
 
                     </h3>
 
-                    <p className="mt-3 line-clamp-2 text-zinc-400">
+                    <p className="mt-1 text-xs font-medium text-orange-400">
 
-                      {game.description}
+                      {game.category}
 
                     </p>
 
-                  </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                  <div>
-
-                    <div className="mt-5 flex flex-wrap gap-2">
-
-                      <span className="rounded-lg bg-red-500 px-3 py-1 text-xs font-bold">
-
-                        🔥 Trending
+                        ⭐ {game.rating || "5.0"}
 
                       </span>
 
-                      <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                        {game.version}
+                        v{game.version}
 
                       </span>
 
-                      <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
                         {game.size}
 
@@ -576,19 +138,21 @@ export default async function Home() {
 
                     </div>
 
-                    <div className="mt-5 flex items-center justify-between">
+                    <div className="mt-2 flex items-center justify-between">
 
-                      <span className="text-yellow-400 font-bold">
+                      <div className="flex items-center gap-3 text-[11px] text-zinc-500">
 
-                        ⭐ {game.rating || 5}
+                        <span>👁 {game.views || 0}</span>
 
-                      </span>
-
-                      <div className="rounded-xl bg-gradient-to-r from-red-500 to-orange-500 px-6 py-3 font-bold transition group-hover:scale-105">
-
-                        Download →
+                        <span>⬇ {game.downloads || 0}</span>
 
                       </div>
+
+                      <span className="text-xs font-bold text-orange-500 transition group-hover:translate-x-1">
+
+                        View →
+
+                      </span>
 
                     </div>
 
@@ -605,131 +169,109 @@ export default async function Home() {
         </section>
         {/* ================= POPULAR GAMES ================= */}
 
-        <section className="mx-auto max-w-7xl px-6 py-20">
+        <section className="mx-auto max-w-7xl px-4 py-10">
 
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between">
 
             <div>
 
-              <span className="text-sm font-bold uppercase tracking-widest text-yellow-500">
+              <p className="text-sm font-bold uppercase tracking-[3px] text-orange-500">
 
-                Most Loved
-
-              </span>
-
-              <h2 className="mt-2 text-4xl font-black">
-
-                👑 Popular Games
-
-              </h2>
-
-              <p className="mt-2 text-zinc-400">
-
-                Most downloaded and highest rated MOD APK games.
+                Most Downloaded
 
               </p>
+
+              <h2 className="mt-1 text-2xl font-black text-white md:text-4xl">
+
+                Popular Games
+
+              </h2>
 
             </div>
 
             <Link
               href="/popular"
-              className="rounded-xl border border-yellow-500 px-5 py-3 font-bold transition hover:bg-yellow-500 hover:text-black"
+              className="rounded-xl border border-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-500"
             >
 
-              View All →
+              View All
 
             </Link>
 
           </div>
 
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
 
             {popularGames?.map((game) => (
 
               <Link
                 key={game.id}
                 href={`/game/${game.slug}`}
-                className="group overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900 transition duration-300 hover:-translate-y-2 hover:border-yellow-500 hover:shadow-2xl hover:shadow-yellow-500/20"
+                className="group rounded-2xl border border-zinc-800 bg-[#111111] p-3 transition-all duration-300 hover:border-orange-500 hover:bg-zinc-900"
               >
 
-                {/* Banner */}
-
-                <div className="relative aspect-[3/4]">
+                <div className="flex items-center gap-3">
 
                   <Image
-                    src={game.banner || game.icon || "/placeholder.png"}
+                    src={game.icon || "/placeholder.png"}
                     alt={game.title}
-                    fill
-                    className="object-cover transition duration-500 group-hover:scale-110"
+                    width={60}
+                    height={60}
+                    className="h-[60px] w-[60px] rounded-2xl border border-zinc-700 object-cover md:h-[72px] md:w-[72px]"
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                  <div className="min-w-0 flex-1">
 
-                  <div className="absolute left-3 top-3 rounded-full bg-yellow-500 px-3 py-1 text-xs font-bold text-black">
+                    <h3 className="line-clamp-2 text-[15px] font-bold leading-5 text-white md:text-lg">
 
-                    👑 POPULAR
+                      {game.title}
 
-                  </div>
+                    </h3>
 
-                  <div className="absolute right-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-bold">
+                    <p className="mt-1 text-xs font-medium text-orange-400">
 
-                    ⭐ {game.rating || 5}
+                      {game.category}
 
-                  </div>
+                    </p>
 
-                </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                {/* Content */}
+                        ⭐ {game.rating || "5.0"}
 
-                <div className="p-5">
+                      </span>
 
-                  <h3 className="line-clamp-2 min-h-[56px] text-lg font-bold">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                    {game.title}
+                        v{game.version}
 
-                  </h3>
+                      </span>
 
-                  <p className="mt-2 text-sm text-zinc-400">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                    {game.category}
+                        {game.size}
 
-                  </p>
+                      </span>
 
-                  <div className="mt-4 flex justify-between text-sm">
+                    </div>
 
-                    <span className="rounded-lg bg-zinc-800 px-3 py-1">
+                    <div className="mt-2 flex items-center justify-between">
 
-                      📦 {game.size}
+                      <div className="flex items-center gap-3 text-[11px] text-zinc-500">
 
-                    </span>
+                        <span>🔥 {game.downloads || 0}</span>
 
-                    <span className="rounded-lg bg-zinc-800 px-3 py-1">
+                        <span>👁 {game.views || 0}</span>
 
-                      v{game.version}
+                      </div>
 
-                    </span>
+                      <span className="text-xs font-bold text-orange-500 transition group-hover:translate-x-1">
 
-                  </div>
+                        View →
 
-                  <div className="mt-4 flex justify-between text-xs text-zinc-400">
+                      </span>
 
-                    <span>
-
-                      👁️ {game.views || 0}
-
-                    </span>
-
-                    <span>
-
-                      ⬇️ {game.downloads || 0}
-
-                    </span>
-
-                  </div>
-
-                  <div className="mt-5 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 py-3 text-center font-bold text-black transition group-hover:scale-105">
-
-                    Download APK
+                    </div>
 
                   </div>
 
@@ -742,131 +284,454 @@ export default async function Home() {
           </div>
 
         </section>
-        {/* ================= PREMIUM CATEGORIES ================= */}
 
-        <section className="mx-auto max-w-7xl px-6 py-20">
 
-          <div className="mb-10 text-center">
+        {/* ================= TRENDING GAMES ================= */}
 
-            <span className="text-sm font-bold uppercase tracking-[4px] text-orange-500">
+        <section className="mx-auto max-w-7xl px-4 py-10">
 
-              Browse Collection
+          <div className="mb-6 flex items-center justify-between">
 
-            </span>
+            <div>
 
-            <h2 className="mt-3 text-4xl font-black">
+              <p className="text-sm font-bold uppercase tracking-[3px] text-orange-500">
 
-              🎮 Game Categories
+                Trending Now
+
+              </p>
+
+              <h2 className="mt-1 text-2xl font-black text-white md:text-4xl">
+
+                🔥 Trending Games
+
+              </h2>
+
+            </div>
+
+            <Link
+              href="/trending"
+              className="rounded-xl border border-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-500"
+            >
+
+              View All
+
+            </Link>
+
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+
+            {trendingGames?.map((game) => (
+
+              <Link
+                key={game.id}
+                href={`/game/${game.slug}`}
+                className="group rounded-2xl border border-zinc-800 bg-[#111111] p-3 transition-all duration-300 hover:border-orange-500 hover:bg-zinc-900"
+              >
+
+                <div className="flex items-center gap-3">
+
+                  <Image
+                    src={game.icon || "/placeholder.png"}
+                    alt={game.title}
+                    width={60}
+                    height={60}
+                    className="h-[60px] w-[60px] rounded-2xl border border-zinc-700 object-cover md:h-[72px] md:w-[72px]"
+                  />
+
+                  <div className="min-w-0 flex-1">
+
+                    <h3 className="line-clamp-2 text-[15px] font-bold leading-5 text-white md:text-lg">
+
+                      {game.title}
+
+                    </h3>
+
+                    <p className="mt-1 text-xs font-medium text-orange-400">
+
+                      {game.category}
+
+                    </p>
+
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
+
+                        🔥 Trending
+
+                      </span>
+
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
+
+                        ⭐ {game.rating || "5.0"}
+
+                      </span>
+
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
+
+                        v{game.version}
+
+                      </span>
+
+                      <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
+
+                        {game.size}
+
+                      </span>
+
+                    </div>
+
+                    <div className="mt-2 flex items-center justify-between">
+
+                      <div className="flex items-center gap-3 text-[11px] text-zinc-500">
+
+                        <span>⬇ {game.downloads || 0}</span>
+
+                        <span>👁 {game.views || 0}</span>
+
+                      </div>
+
+                      <span className="text-xs font-bold text-orange-500 transition duration-300 group-hover:translate-x-1">
+
+                        View →
+
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </Link>
+
+            ))}
+
+          </div>
+
+        </section>
+        {/* ================= GAME CATEGORIES ================= */}
+
+        <section className="mx-auto max-w-7xl px-4 py-12">
+
+          <div className="mb-8 text-center">
+
+            <p className="text-sm font-bold uppercase tracking-[3px] text-orange-500">
+
+              Browse Games
+
+            </p>
+
+            <h2 className="mt-2 text-3xl font-black text-white md:text-4xl">
+
+              Game Categories
 
             </h2>
 
             <p className="mt-3 text-zinc-400">
 
-              Explore games by your favorite category.
+              Explore your favorite MOD APK games.
 
             </p>
 
           </div>
 
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
 
             {[
-              {
-                name: "Action",
-                icon: "⚔️",
-                color: "hover:border-red-500 hover:bg-red-500/10"
-              },
-              {
-                name: "Adventure",
-                icon: "🗺️",
-                color: "hover:border-orange-500 hover:bg-orange-500/10"
-              },
-              {
-                name: "Arcade",
-                icon: "🕹️",
-                color: "hover:border-pink-500 hover:bg-pink-500/10"
-              },
-              {
-                name: "Racing",
-                icon: "🏎️",
-                color: "hover:border-blue-500 hover:bg-blue-500/10"
-              },
-              {
-                name: "Sports",
-                icon: "⚽",
-                color: "hover:border-green-500 hover:bg-green-500/10"
-              },
-              {
-                name: "Simulation",
-                icon: "🏙️",
-                color: "hover:border-cyan-500 hover:bg-cyan-500/10"
-              },
-              {
-                name: "Strategy",
-                icon: "♟️",
-                color: "hover:border-purple-500 hover:bg-purple-500/10"
-              },
-              {
-                name: "Puzzle",
-                icon: "🧩",
-                color: "hover:border-yellow-500 hover:bg-yellow-500/10"
-              },
-              {
-                name: "RPG",
-                icon: "🛡️",
-                color: "hover:border-indigo-500 hover:bg-indigo-500/10"
-              },
-              {
-                name: "Offline",
-                icon: "📴",
-                color: "hover:border-emerald-500 hover:bg-emerald-500/10"
-              },
-              {
-                name: "Online",
-                icon: "🌍",
-                color: "hover:border-sky-500 hover:bg-sky-500/10"
-              },
-              {
-                name: "Multiplayer",
-                icon: "👥",
-                color: "hover:border-fuchsia-500 hover:bg-fuchsia-500/10"
-              }
-
+              { name: "Action", icon: "🎯" },
+              { name: "Adventure", icon: "🗺️" },
+              { name: "Arcade", icon: "🕹️" },
+              { name: "Racing", icon: "🏎️" },
+              { name: "Sports", icon: "🏆" },
+              { name: "Puzzle", icon: "🧩" },
+              { name: "Strategy", icon: "♟️" },
+              { name: "RPG", icon: "🛡️" },
+              { name: "Multiplayer", icon: "👥" },
+              { name: "Online", icon: "🌐" },
+              { name: "Offline", icon: "📴" },
+              { name: "Simulation", icon: "🎮" },
             ].map((category) => (
 
               <Link
                 key={category.name}
                 href={`/category/${encodeURIComponent(category.name)}`}
-                className={`group rounded-3xl border border-zinc-800 bg-zinc-900 p-6 text-center transition duration-300 hover:-translate-y-2 ${category.color}`}
+                className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5 text-center transition hover:border-orange-500 hover:bg-zinc-900"
               >
 
-                <div className="text-5xl transition duration-300 group-hover:scale-125">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500/10 text-3xl transition group-hover:bg-orange-500">
 
-                  {category.icon}
+                  <span className="group-hover:scale-110 transition">
+                    {category.icon}
+                  </span>
 
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold">
-
+                <h3 className="mt-4 text-base font-bold text-white">
                   {category.name}
-
                 </h3>
 
-                <p className="mt-2 text-sm text-zinc-500">
-
+                <p className="mt-1 text-xs text-zinc-500">
                   Explore Games
-
                 </p>
 
               </Link>
 
             ))}
+          </div>
+        </section>
+        {/* ================= WHY CHOOSE US ================= */}
+
+        <section className="mx-auto max-w-7xl px-4 py-14">
+
+          <div className="mb-10 text-center">
+
+            <p className="text-sm font-bold uppercase tracking-[3px] text-orange-500">
+
+              Why Choose Us
+
+            </p>
+
+            <h2 className="mt-2 text-3xl font-black text-white md:text-4xl">
+
+              Why Millions Choose MODVerse
+
+            </h2>
+
+            <p className="mt-3 text-zinc-400">
+
+              Fast, Safe and Premium MOD APK downloads for Android.
+
+            </p>
+
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+            {/* Card 1 */}
+
+            <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 transition hover:-translate-y-1 hover:border-orange-500">
+
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-3xl">
+
+                🛡️
+
+              </div>
+
+              <h3 className="mt-5 text-xl font-bold text-white">
+
+                100% Safe APK
+
+              </h3>
+
+              <p className="mt-3 leading-7 text-zinc-400">
+
+                Every game is checked before publishing so you can download safely.
+
+              </p>
+
+            </div>
+
+            {/* Card 2 */}
+
+            <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 transition hover:-translate-y-1 hover:border-orange-500">
+
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-3xl">
+
+                ⚡
+
+              </div>
+
+              <h3 className="mt-5 text-xl font-bold text-white">
+
+                Daily Updates
+
+              </h3>
+
+              <p className="mt-3 leading-7 text-zinc-400">
+
+                New MOD APK versions are added every day with latest features.
+
+              </p>
+
+            </div>
+            {/* Card 3 */}
+
+            <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 transition hover:-translate-y-1 hover:border-orange-500">
+
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-3xl">
+
+                🚀
+
+              </div>
+
+              <h3 className="mt-5 text-xl font-bold text-white">
+
+                Fast Downloads
+
+              </h3>
+
+              <p className="mt-3 leading-7 text-zinc-400">
+
+                Enjoy high-speed download links with a smooth and secure experience.
+
+              </p>
+
+            </div>
+
+            {/* Card 4 */}
+
+            <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 transition hover:-translate-y-1 hover:border-orange-500">
+
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-3xl">
+
+                🎮
+
+              </div>
+
+              <h3 className="mt-5 text-xl font-bold text-white">
+
+                Premium MOD APK
+
+              </h3>
+
+              <p className="mt-3 leading-7 text-zinc-400">
+
+                Unlimited Money, Premium Unlocked, No Ads and many more exciting MOD features.
+
+              </p>
+
+            </div>
 
           </div>
 
         </section>
-        {/* ================= PREMIUM FOOTER ================= */}
+        {/* ================= FAQ ================= */}
 
+        <section className="mx-auto max-w-5xl px-4 py-14">
+
+          <div className="mb-10 text-center">
+
+            <p className="text-sm font-bold uppercase tracking-[3px] text-orange-500">
+
+              Frequently Asked Questions
+
+            </p>
+
+            <h2 className="mt-2 text-3xl font-black text-white md:text-4xl">
+
+              FAQ
+
+            </h2>
+
+            <p className="mt-3 text-zinc-400">
+
+              Everything you need to know before downloading MOD APK games.
+
+            </p>
+
+          </div>
+
+          <div className="space-y-4">
+
+            <details className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5">
+
+              <summary className="cursor-pointer list-none text-lg font-bold text-white">
+
+                Is it safe to download MOD APK games?
+
+              </summary>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+
+                Yes. Every APK uploaded on MODVerse is checked before publishing to
+                provide a safe download experience.
+
+              </p>
+
+            </details>
+
+            <details className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5">
+
+              <summary className="cursor-pointer list-none text-lg font-bold text-white">
+
+                Are all games free?
+
+              </summary>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+
+                Yes. All MOD APK games available on our website are completely free to download.
+
+              </p>
+
+            </details>
+
+            <details className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5">
+
+              <summary className="cursor-pointer list-none text-lg font-bold text-white">
+
+                Do I need to create an account?
+
+              </summary>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+
+                No. You can browse and download games without creating any account.
+
+              </p>
+
+            </details>
+            <details className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5">
+
+              <summary className="cursor-pointer list-none text-lg font-bold text-white">
+
+                How often are games updated?
+
+              </summary>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+
+                We update our games daily to provide the latest MOD APK versions with new features, bug fixes and improved performance.
+
+              </p>
+
+            </details>
+
+            <details className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5">
+
+              <summary className="cursor-pointer list-none text-lg font-bold text-white">
+
+                Which Android versions are supported?
+
+              </summary>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+
+                Most MOD APK games support Android 7.0 and above. Please check the game page for the exact requirements before downloading.
+
+              </p>
+
+            </details>
+
+            <details className="group rounded-2xl border border-zinc-800 bg-[#111111] p-5">
+
+              <summary className="cursor-pointer list-none text-lg font-bold text-white">
+
+                Why should I choose MODVerse?
+
+              </summary>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+
+                MODVerse provides fast downloads, clean files, daily updates, premium MOD features and an easy-to-use interface for Android gamers.
+
+              </p>
+
+            </details>
+
+          </div>
+          <WhatsAppSticky />
+        </section>
         <Footer />
       </main>
     </>

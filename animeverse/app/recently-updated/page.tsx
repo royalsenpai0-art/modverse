@@ -95,92 +95,57 @@ export default async function RecentlyUpdatedPage() {
 
                     ) : (
 
-                        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+                        <div className="space-y-4">
+
                             {games.map((game) => (
 
                                 <Link
                                     key={game.id}
                                     href={`/game/${game.slug}`}
-                                    className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20"
+                                    className="group flex items-center gap-4 rounded-[24px] border border-zinc-800 bg-[#111111] p-4 transition-all duration-300 hover:border-orange-500 hover:bg-[#181818]"
                                 >
 
-                                    {/* Image */}
+                                    {/* Icon */}
 
-                                    <div className="relative aspect-[3/4] overflow-hidden">
-
-                                        <Image
-                                            src={game.banner || game.icon}
-                                            alt={game.title}
-                                            fill
-                                            sizes="(max-width:768px) 50vw,(max-width:1200px) 33vw,20vw"
-                                            className="object-cover transition duration-500 group-hover:scale-110"
-                                        />
-
-                                        {/* Overlay */}
-
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-                                        {/* MOD Badge */}
-
-                                        <div className="absolute left-3 top-3 rounded-full bg-green-600 px-3 py-1 text-xs font-bold">
-
-                                            MOD
-
-                                        </div>
-
-                                        {/* Version */}
-
-                                        <div className="absolute right-3 top-3 rounded-full bg-orange-600 px-3 py-1 text-xs font-bold">
-
-                                            v{game.version}
-
-                                        </div>
-
-                                        {/* Rating */}
-
-                                        <div className="absolute bottom-3 left-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold backdrop-blur">
-
-                                            ⭐ {game.rating || "5.0"}
-
-                                        </div>
-
-                                    </div>
+                                    <Image
+                                        src={game.icon}
+                                        alt={game.title}
+                                        width={90}
+                                        height={90}
+                                        className="h-[90px] w-[90px] rounded-[22px] border border-zinc-700 object-cover"
+                                    />
 
                                     {/* Content */}
 
-                                    <div className="space-y-3 p-4">
+                                    <div className="min-w-0 flex-1">
 
-                                        <h2 className="line-clamp-2 text-lg font-bold transition group-hover:text-orange-500">
+                                        <h2 className="line-clamp-2 text-xl font-black transition group-hover:text-orange-500">
 
                                             {game.title}
 
                                         </h2>
 
-                                        <div className="flex items-center justify-between">
+                                        <p className="mt-2 text-sm text-orange-500">
 
-                                            <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+                                            ⭐ {game.rating || "5.0"} • {game.category}
 
-                                                {game.category}
+                                        </p>
+
+                                        <div className="mt-3 flex flex-wrap gap-2">
+
+                                            <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold">
+
+                                                Version {game.version}
 
                                             </span>
 
-                                            <span className="text-xs text-green-400">
+                                            <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold">
 
                                                 {game.size}
 
                                             </span>
 
-                                        </div>
-
-                                        <div className="flex items-center justify-between text-sm">
-
-                                            <span className="text-zinc-400">
-
-                                                ⬇ {game.downloads || 0}
-
-                                            </span>
-
-                                            <span className="text-orange-500">
+                                            <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold text-green-400">
 
                                                 MOD {game.mod_version}
 
@@ -188,20 +153,33 @@ export default async function RecentlyUpdatedPage() {
 
                                         </div>
 
-                                        <div className="border-t border-zinc-800 pt-3 text-xs text-zinc-500">
+                                        <p className="mt-3 text-xs text-zinc-500">
 
                                             Updated{" "}
                                             {game.updated_at
                                                 ? new Date(game.updated_at).toLocaleDateString()
                                                 : "Recently"}
 
-                                        </div>
+                                        </p>
+
+                                    </div>
+
+                                    {/* Download Button */}
+
+                                    <div className="hidden md:block">
+
+                                        <span className="rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 text-sm font-bold text-white transition group-hover:scale-105">
+
+                                            Download
+
+                                        </span>
 
                                     </div>
 
                                 </Link>
 
                             ))}
+
                         </div>
 
                     )}

@@ -2,13 +2,16 @@ import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+
+  const siteUrl = "https://modverse.com";
+
   const { data: games } = await supabase
     .from("games")
     .select("slug, updated_at");
 
-  const gameUrls =
+  const gamePages =
     games?.map((game) => ({
-      url: `https://YOUR-DOMAIN.com/game/${game.slug}`,
+      url: `${siteUrl}/game/${game.slug}`,
       lastModified: game.updated_at
         ? new Date(game.updated_at)
         : new Date(),
@@ -16,38 +19,46 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     })) || [];
 
+  const downloadPages =
+    games?.map((game) => ({
+      url: `${siteUrl}/download/${game.slug}`,
+      lastModified: game.updated_at
+        ? new Date(game.updated_at)
+        : new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })) || [];
+
   return [
     {
-      url: "https://YOUR-DOMAIN.com",
+      url: siteUrl,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
     },
+
     {
-      url: "https://YOUR-DOMAIN.com/about",
+      url: `${siteUrl}/recently-updated`,
       lastModified: new Date(),
-      priority: 0.5,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
+
     {
-      url: "https://YOUR-DOMAIN.com/contact",
+      url: `${siteUrl}/popular`,
       lastModified: new Date(),
-      priority: 0.5,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
+
     {
-      url: "https://YOUR-DOMAIN.com/privacy-policy",
+      url: `${siteUrl}/trending`,
       lastModified: new Date(),
-      priority: 0.5,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
-    {
-      url: "https://YOUR-DOMAIN.com/dmca",
-      lastModified: new Date(),
-      priority: 0.5,
-    },
-    {
-      url: "https://YOUR-DOMAIN.com/cookies",
-      lastModified: new Date(),
-      priority: 0.5,
-    },
-    ...gameUrls,
+
+    ...gamePages,
+    ...downloadPages,
   ];
 }

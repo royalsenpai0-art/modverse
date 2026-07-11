@@ -179,11 +179,11 @@ export default function DMCAPage() {
                     </div>
 
                 </section>
-
+                <Footer />
             </main>
 
 
-            <Footer />
+
         </>
     );
 }

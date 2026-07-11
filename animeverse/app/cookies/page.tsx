@@ -168,10 +168,10 @@ export default function CookiesPage() {
                     </div>
 
                 </section>
-
+                <Footer />
             </main>
 
-            <Footer />
+
 
         </>
     );

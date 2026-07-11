@@ -49,57 +49,84 @@ export default async function LatestPage() {
 
                 <section className="mx-auto max-w-7xl px-4 py-14">
 
-                    <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+                    <div className="space-y-4">
 
-                        {games?.map((game) => (
+                        {(games ?? []) .map((game) => (
 
                             <Link
                                 key={game.id}
                                 href={`/game/${game.slug}`}
-                                className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition duration-300 hover:-translate-y-1 hover:border-green-500"
+                                className="group flex items-center gap-4 rounded-[24px] border border-zinc-800 bg-[#111111] p-4 transition-all duration-300 hover:border-orange-500 hover:bg-[#181818]"
                             >
 
-                                <div className="relative aspect-[3/4]">
+                                {/* Icon */}
 
-                                    <Image
-                                        src={game.banner || game.icon}
-                                        alt={game.title}
-                                        fill
-                                        sizes="250px"
-                                        className="object-cover transition duration-300 group-hover:scale-105"
-                                    />
+                                <Image
+                                    src={game.icon}
+                                    alt={game.title}
+                                    width={90}
+                                    height={90}
+                                    className="h-[90px] w-[90px] rounded-[22px] border border-zinc-700 object-cover"
+                                />
 
-                                </div>
+                                {/* Content */}
 
-                                <div className="p-4">
+                                <div className="min-w-0 flex-1">
 
-                                    <h2 className="line-clamp-2 font-bold">
+                                    <h2 className="line-clamp-2 text-xl font-black transition group-hover:text-orange-500">
 
                                         {game.title}
 
                                     </h2>
 
-                                    <p className="mt-2 text-sm text-zinc-400">
+                                    <p className="mt-2 text-sm text-orange-500">
 
-                                        {game.category}
+                                        ⭐ {game.rating || "5.0"} • {game.category}
 
                                     </p>
 
-                                    <div className="mt-4 flex items-center justify-between">
+                                    <div className="mt-3 flex flex-wrap gap-2">
 
-                                        <span className="rounded-lg bg-green-600 px-3 py-1 text-xs font-bold">
+                                        <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold">
 
-                                            MOD
+                                            Version {game.version}
 
                                         </span>
 
-                                        <span className="text-sm text-zinc-400">
+                                        <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold">
 
-                                            {game.version}
+                                            {game.size}
+
+                                        </span>
+
+                                        <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold text-green-400">
+
+                                            MOD {game.mod_version}
 
                                         </span>
 
                                     </div>
+
+                                    <p className="mt-3 text-xs text-zinc-500">
+
+                                        Updated{" "}
+                                        {game.updated_at
+                                            ? new Date(game.updated_at).toLocaleDateString()
+                                            : "Recently"}
+
+                                    </p>
+
+                                </div>
+
+                                {/* Download Button */}
+
+                                <div className="hidden md:block">
+
+                                    <span className="rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 text-sm font-bold text-white transition group-hover:scale-105">
+
+                                        Download
+
+                                    </span>
 
                                 </div>
 

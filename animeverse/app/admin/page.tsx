@@ -1,18 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 interface Game {
     id: number;
 
     title: string;
     slug: string;
+
+    screenshot2: string;
+    screenshot3: string;
+    screenshot4: string;
+    screenshot5: string;
+
+    short_description: string;
     description: string;
 
     icon: string;
     banner: string;
+
+    screenshots: string[];
 
     version: string;
     mod_version: string;
@@ -22,6 +31,9 @@ interface Game {
 
     android: string;
     size: string;
+
+    rating: string;
+    downloads: string;
 
     category: string;
     tags: string;
@@ -33,7 +45,18 @@ interface Game {
 
     mod_features: string;
     whats_new: string;
-    faq: string;
+
+    faq1_question: string;
+    faq1_answer: string;
+
+    faq2_question: string;
+    faq2_answer: string;
+
+    faq3_question: string;
+    faq3_answer: string;
+
+    faq4_question: string;
+    faq4_answer: string;
 
     seo_title: string;
     seo_description: string;
@@ -47,25 +70,107 @@ interface Game {
     updated_at: string;
 }
 
-export default function AdminPage() {
+interface Blog {
 
+    id: number;
+
+    title: string;
+
+    slug: string;
+
+    short_description: string;
+
+    content: string;
+
+    banner: string;
+
+    author: string;
+
+    category: string;
+
+    tags: string;
+
+    seo_title: string;
+
+    seo_description: string;
+
+    seo_keywords: string;
+
+    featured: boolean;
+
+    views: number;
+
+    game_id: number | null;
+    game_slug: string;
+
+    created_at: string;
+
+    updated_at: string;
+
+}
+
+export default function AdminPage() {
     const [games, setGames] = useState<Game[]>([]);
     const [editingGame, setEditingGame] = useState<Game | null>(null);
 
     const [search, setSearch] = useState("");
 
-    // Basic Information
+    // =====================
+    // BASIC INFORMATION
+    // =====================
 
     const [title, setTitle] = useState("");
     const [slug, setSlug] = useState("");
+
+    const [shortDescription, setShortDescription] = useState("");
     const [description, setDescription] = useState("");
 
-    // Images
+    // =====================
+    // IMAGES
+    // =====================
 
     const [iconFile, setIconFile] = useState<File | null>(null);
     const [bannerFile, setBannerFile] = useState<File | null>(null);
 
-    // Game Information
+    const [screenshot1, setScreenshot1] = useState<File | null>(null);
+    const [screenshot2, setScreenshot2] = useState<File | null>(null);
+    const [screenshot3, setScreenshot3] = useState<File | null>(null);
+    const [screenshot4, setScreenshot4] = useState<File | null>(null);
+    const [screenshot5, setScreenshot5] = useState<File | null>(null);
+    const [screenshot6, setScreenshot6] = useState<File | null>(null);
+
+
+    //   ==================blog===========
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+
+    const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
+
+    const [blogTitle, setBlogTitle] = useState("");
+
+    const [blogSlug, setBlogSlug] = useState("");
+
+    const [blogShortDescription, setBlogShortDescription] = useState("");
+
+    const [blogContent, setBlogContent] = useState("");
+
+    const [blogBanner, setBlogBanner] = useState<File | null>(null);
+
+    const [blogAuthor, setBlogAuthor] = useState("MODVerse");
+
+    const [blogCategory, setBlogCategory] = useState("");
+
+    const [blogTags, setBlogTags] = useState("");
+
+    const [blogSeoTitle, setBlogSeoTitle] = useState("");
+
+    const [blogSeoDescription, setBlogSeoDescription] = useState("");
+
+    const [blogSeoKeywords, setBlogSeoKeywords] = useState("");
+
+    const [blogFeatured, setBlogFeatured] = useState(false);
+    // =====================
+    // GAME INFO
+    // =====================
 
     const [version, setVersion] = useState("");
     const [modVersion, setModVersion] = useState("");
@@ -76,29 +181,63 @@ export default function AdminPage() {
     const [android, setAndroid] = useState("");
     const [size, setSize] = useState("");
 
+    const [rating, setRating] = useState("5.0");
+    const [downloads, setDownloads] = useState("0");
+
     const [category, setCategory] = useState("");
     const [tags, setTags] = useState("");
 
-    // Download Links
+    useEffect(() => {
+        loadGames();
+    }, []);
+    // =====================
+    // DOWNLOAD LINKS
+    // =====================
 
     const [playstore, setPlaystore] = useState("");
     const [originalApk, setOriginalApk] = useState("");
     const [modApk, setModApk] = useState("");
     const [mirror, setMirror] = useState("");
 
-    // MOD Content
+    // =====================
+    // MOD CONTENT
+    // =====================
 
     const [modFeatures, setModFeatures] = useState("");
     const [whatsNew, setWhatsNew] = useState("");
-    const [faq, setFaq] = useState("");
 
+
+    // BloG Dropdown
+    const gamesList = games;
+    const [gameId, setGameId] = useState<number | null>(null);
+    const [gameSlug, setGameSlug] = useState("");
+    // =====================
+    // FAQ
+    // =====================
+
+    const [faq1Question, setFaq1Question] = useState("");
+    const [faq1Answer, setFaq1Answer] = useState("");
+
+    const [faq2Question, setFaq2Question] = useState("");
+    const [faq2Answer, setFaq2Answer] = useState("");
+
+    const [faq3Question, setFaq3Question] = useState("");
+    const [faq3Answer, setFaq3Answer] = useState("");
+
+    const [faq4Question, setFaq4Question] = useState("");
+    const [faq4Answer, setFaq4Answer] = useState("");
+
+    // =====================
     // SEO
+    // =====================
 
     const [seoTitle, setSeoTitle] = useState("");
     const [seoDescription, setSeoDescription] = useState("");
     const [seoKeywords, setSeoKeywords] = useState("");
 
-    // Homepage
+    // =====================
+    // HOMEPAGE
+    // =====================
 
     const [featured, setFeatured] = useState(false);
     const [trending, setTrending] = useState(false);
@@ -107,6 +246,7 @@ export default function AdminPage() {
     useEffect(() => {
         loadGames();
     }, []);
+
     // =====================
     // LOAD GAMES
     // =====================
@@ -124,18 +264,96 @@ export default function AdminPage() {
 
         setGames(data || []);
     }
+    // ========================
+    // blog
+    // ===================
+    async function loadBlogs() {
 
+        const { data } = await supabase
+
+            .from("blogs")
+
+            .select("*")
+
+            .order("created_at", {
+                ascending: false,
+            });
+
+        if (data) {
+
+            setBlogs(data);
+
+        }
+
+    }
+
+    async function deleteBlog(id: number) {
+
+        if (!confirm("Delete this blog?")) return;
+
+        const { error } = await supabase
+            .from("blogs")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+
+            alert(error.message);
+
+            return;
+
+        }
+
+        loadBlogs();
+
+    }
+    function editBlog(blog: Blog) {
+
+        setEditingBlog(blog);
+
+        setBlogTitle(blog.title);
+
+        setBlogSlug(blog.slug);
+
+        setGameId(blog.game_id);
+        setGameSlug(blog.game_slug);
+
+        setBlogShortDescription(blog.short_description);
+
+        setBlogContent(blog.content);
+
+        setBlogAuthor(blog.author);
+
+        setBlogCategory(blog.category);
+
+        setBlogTags(blog.tags);
+
+        setBlogSeoTitle(blog.seo_title);
+
+        setBlogSeoDescription(blog.seo_description);
+
+        setBlogSeoKeywords(blog.seo_keywords);
+
+        setBlogFeatured(blog.featured);
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+
+    }
     // =====================
-    // UPLOAD IMAGE
+    // IMAGE UPLOAD
     // =====================
 
     async function uploadImage(file: File | null) {
         if (!file) return "";
 
-        const fileExt = file.name.split(".").pop();
+        const ext = file.name.split(".").pop();
+
         const fileName = `${Date.now()}-${Math.random()
             .toString(36)
-            .substring(2)}.${fileExt}`;
+            .substring(2)}.${ext}`;
 
         const { error } = await supabase.storage
             .from("games")
@@ -146,7 +364,6 @@ export default function AdminPage() {
 
         if (error) {
             alert(error.message);
-            console.error(error);
             return "";
         }
 
@@ -156,6 +373,20 @@ export default function AdminPage() {
 
         return data.publicUrl;
     }
+    // =====================
+    // AUTO SLUG
+    // =====================
+
+    useEffect(() => {
+        if (!editingGame) {
+            setSlug(
+                title
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-|-$/g, "")
+            );
+        }
+    }, [title, editingGame]);
 
     // =====================
     // RESET FORM
@@ -166,7 +397,19 @@ export default function AdminPage() {
 
         setTitle("");
         setSlug("");
+
+        setShortDescription("");
         setDescription("");
+
+        setIconFile(null);
+        setBannerFile(null);
+
+        setScreenshot1(null);
+        setScreenshot2(null);
+        setScreenshot3(null);
+        setScreenshot4(null);
+        setScreenshot5(null);
+        setScreenshot6(null);
 
         setVersion("");
         setModVersion("");
@@ -176,6 +419,9 @@ export default function AdminPage() {
 
         setAndroid("");
         setSize("");
+
+        setRating("5.0");
+        setDownloads("0");
 
         setCategory("");
         setTags("");
@@ -187,7 +433,18 @@ export default function AdminPage() {
 
         setModFeatures("");
         setWhatsNew("");
-        setFaq("");
+
+        setFaq1Question("");
+        setFaq1Answer("");
+
+        setFaq2Question("");
+        setFaq2Answer("");
+
+        setFaq3Question("");
+        setFaq3Answer("");
+
+        setFaq4Question("");
+        setFaq4Answer("");
 
         setSeoTitle("");
         setSeoDescription("");
@@ -196,9 +453,6 @@ export default function AdminPage() {
         setFeatured(false);
         setTrending(false);
         setPopular(false);
-
-        setIconFile(null);
-        setBannerFile(null);
     }
 
     // =====================
@@ -208,8 +462,31 @@ export default function AdminPage() {
     const filteredGames = games.filter((game) =>
         game.title.toLowerCase().includes(search.toLowerCase())
     );
+
     // =====================
-    // UPLOAD GAME
+    // SCREENSHOTS
+    // =====================
+
+    async function uploadScreenshots() {
+
+        return {
+
+            screenshots: screenshot1 ? await uploadImage(screenshot1) : "",
+
+            screenshot2: screenshot2 ? await uploadImage(screenshot2) : "",
+
+            screenshot3: screenshot3 ? await uploadImage(screenshot3) : "",
+
+            screenshot4: screenshot4 ? await uploadImage(screenshot4) : "",
+
+            screenshot5: screenshot5 ? await uploadImage(screenshot5) : "",
+
+        };
+
+    }
+
+    // =====================
+    // SAVE GAME
     // =====================
 
     async function uploadGame(e: React.FormEvent) {
@@ -218,22 +495,29 @@ export default function AdminPage() {
         let icon = editingGame?.icon || "";
         let banner = editingGame?.banner || "";
 
-        if (iconFile) {
-            icon = await uploadImage(iconFile);
-        }
+        if (iconFile) icon = await uploadImage(iconFile);
+        if (bannerFile) banner = await uploadImage(bannerFile);
 
-        if (bannerFile) {
-            banner = await uploadImage(bannerFile);
-        }
-
+        const images = await uploadScreenshots();
         const gameData = {
             title,
             slug,
+
+            short_description: shortDescription,
             description,
 
             icon,
             banner,
 
+            screenshots: images.screenshots || editingGame?.screenshots || "",
+
+            screenshot2: images.screenshot2 || editingGame?.screenshot2 || "",
+
+            screenshot3: images.screenshot3 || editingGame?.screenshot3 || "",
+
+            screenshot4: images.screenshot4 || editingGame?.screenshot4 || "",
+
+            screenshot5: images.screenshot5 || editingGame?.screenshot5 || "",
             version,
             mod_version: modVersion,
 
@@ -242,6 +526,9 @@ export default function AdminPage() {
 
             android,
             size,
+
+            rating,
+            downloads,
 
             category,
             tags,
@@ -253,7 +540,18 @@ export default function AdminPage() {
 
             mod_features: modFeatures,
             whats_new: whatsNew,
-            faq,
+
+            faq1_question: faq1Question,
+            faq1_answer: faq1Answer,
+
+            faq2_question: faq2Question,
+            faq2_answer: faq2Answer,
+
+            faq3_question: faq3Question,
+            faq3_answer: faq3Answer,
+
+            faq4_question: faq4Question,
+            faq4_answer: faq4Answer,
 
             seo_title: seoTitle,
             seo_description: seoDescription,
@@ -268,17 +566,21 @@ export default function AdminPage() {
 
         if (editingGame) {
 
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from("games")
                 .update(gameData)
-                .eq("id", editingGame.id);
+                .eq("id", editingGame.id)
+                .select();
+
+            console.log("UPDATE DATA:", data);
+            console.log("UPDATE ERROR:", error);
 
             if (error) {
                 alert(error.message);
                 return;
             }
 
-            alert("Game Updated Successfully");
+            alert("✅ Game Updated Successfully");
 
         } else {
 
@@ -296,55 +598,15 @@ export default function AdminPage() {
                 return;
             }
 
-            alert("Game Uploaded Successfully");
+            alert("✅ Game Uploaded Successfully");
         }
-
-        resetForm();
-        loadGames();
+        useEffect(() => {
+            resetForm();
+            loadGames();
+            loadBlogs();
+           
+        }, []);
     }
-
-    // =====================
-    // EDIT GAME
-    // =====================
-
-    function editGame(game: Game) {
-
-        setEditingGame(game);
-
-        setTitle(game.title);
-        setSlug(game.slug);
-        setDescription(game.description);
-
-        setVersion(game.version);
-        setModVersion(game.mod_version);
-
-        setDeveloper(game.developer);
-        setPublisher(game.publisher);
-
-        setAndroid(game.android);
-        setSize(game.size);
-
-        setCategory(game.category);
-        setTags(game.tags);
-
-        setPlaystore(game.playstore_link);
-        setOriginalApk(game.original_link);
-        setModApk(game.mod_link);
-        setMirror(game.mirror_link);
-
-        setModFeatures(game.mod_features);
-        setWhatsNew(game.whats_new);
-        setFaq(game.faq);
-
-        setSeoTitle(game.seo_title);
-        setSeoDescription(game.seo_description);
-        setSeoKeywords(game.seo_keywords);
-
-        setFeatured(game.featured);
-        setTrending(game.trending);
-        setPopular(game.popular);
-    }
-
     // =====================
     // DELETE GAME
     // =====================
@@ -365,711 +627,1275 @@ export default function AdminPage() {
 
         loadGames();
     }
+
+    // ==================
+    // blog
+    // ==================
+    async function uploadBlog(e: React.FormEvent) {
+
+        e.preventDefault();
+
+        let banner = editingBlog?.banner || "";
+
+        if (blogBanner) {
+
+            banner = await uploadImage(blogBanner);
+
+        }
+
+        const blogData = {
+
+            title: blogTitle,
+
+            slug: blogSlug,
+
+            short_description: blogShortDescription,
+
+            content: blogContent,
+
+            banner,
+
+            author: blogAuthor,
+
+            category: blogCategory,
+
+            tags: blogTags,
+
+            game_id: gameId,
+            game_slug: gameSlug,
+
+            seo_title: blogSeoTitle,
+
+            seo_description: blogSeoDescription,
+
+            seo_keywords: blogSeoKeywords,
+
+            featured: blogFeatured,
+
+            updated_at: new Date().toISOString(),
+
+        };
+
+        if (editingBlog) {
+
+            const { error } = await supabase
+
+                .from("blogs")
+
+                .update(blogData)
+
+                .eq("id", editingBlog.id);
+
+            if (error) {
+
+                alert(error.message);
+
+                return;
+
+            }
+
+            alert("✅ Blog Updated Successfully");
+
+        } else {
+
+            const { error } = await supabase
+
+                .from("blogs")
+
+                .insert([
+
+                    {
+
+                        ...blogData,
+
+                        created_at: new Date().toISOString(),
+
+                    },
+
+                ]);
+
+            if (error) {
+
+                alert(error.message);
+
+                return;
+
+            }
+
+            alert("✅ Blog Published Successfully");
+
+        }
+
+        resetBlogForm();
+
+        loadBlogs();
+
+    }
+    function resetBlogForm() {
+
+        setEditingBlog(null);
+
+        setBlogTitle("");
+
+        setBlogSlug("");
+
+        setBlogShortDescription("");
+
+        setBlogContent("");
+
+        setGameId(null);
+        setGameSlug("");
+
+
+        setBlogBanner(null);
+
+        setBlogAuthor("MODVerse");
+
+        setBlogCategory("");
+
+        setBlogTags("");
+
+        setBlogSeoTitle("");
+
+        setBlogSeoDescription("");
+
+        setBlogSeoKeywords("");
+
+        setBlogFeatured(false);
+
+    }
     // =====================
-    // UI
+    // EDIT GAME
     // =====================
 
+    function editGame(game: Game) {
+
+        setEditingGame(game);
+
+        setTitle(game.title);
+        setSlug(game.slug);
+
+        setShortDescription(game.short_description);
+        setDescription(game.description);
+
+        setVersion(game.version);
+        setModVersion(game.mod_version);
+
+        setDeveloper(game.developer);
+        setPublisher(game.publisher);
+
+        setAndroid(game.android);
+        setSize(game.size);
+
+        setRating(game.rating);
+        setDownloads(game.downloads);
+
+        setCategory(game.category);
+        setTags(game.tags);
+
+        setPlaystore(game.playstore_link);
+        setOriginalApk(game.original_link);
+        setModApk(game.mod_link);
+        setMirror(game.mirror_link);
+
+        setModFeatures(game.mod_features);
+        setWhatsNew(game.whats_new);
+
+        setFaq1Question(game.faq1_question);
+        setFaq1Answer(game.faq1_answer);
+
+        setFaq2Question(game.faq2_question);
+        setFaq2Answer(game.faq2_answer);
+
+        setFaq3Question(game.faq3_question);
+        setFaq3Answer(game.faq3_answer);
+
+        setFaq4Question(game.faq4_question);
+        setFaq4Answer(game.faq4_answer);
+
+        setSeoTitle(game.seo_title);
+        setSeoDescription(game.seo_description);
+        setSeoKeywords(game.seo_keywords);
+
+        setFeatured(game.featured);
+        setTrending(game.trending);
+        setPopular(game.popular);
+    }
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <main className="min-h-screen bg-[#090909] text-white">
 
-            <h1 className="text-4xl font-bold mb-8">
-                GameHub Admin Panel
-            </h1>
+            {/* Header */}
 
-            <form
-                onSubmit={uploadGame}
-                className="space-y-8 bg-white p-6 rounded-xl shadow"
-            >
+            <div className="border-b border-zinc-800 bg-[#111111]">
 
-                {/* =======================
-BASIC INFORMATION
-======================= */}
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
 
-                <div>
+                    <div>
 
-                    <h2 className="text-2xl font-bold mb-5">
-                        Basic Information
-                    </h2>
+                        <h1 className="text-4xl font-black">
 
-                    <div className="grid md:grid-cols-2 gap-5">
+                            🎮 MODVerse
 
-                        <div>
+                        </h1>
 
-                            <label className="font-semibold">
-                                Game Title
-                            </label>
+                        <p className="mt-2 text-zinc-400">
 
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
+                            Manage Games, SEO, Screenshots & Downloads
 
-                        </div>
-
-                        <div>
-
-                            <label className="font-semibold">
-                                Slug
-                            </label>
-
-                            <input
-                                type="text"
-                                value={slug}
-                                onChange={(e) => setSlug(e.target.value)}
-                                required
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
-
-                        </div>
+                        </p>
 
                     </div>
 
-                    <div className="mt-5">
+                    <button
+                        onClick={resetForm}
+                        className="rounded-xl bg-orange-500 px-6 py-3 font-bold transition hover:bg-orange-600"
+                    >
 
-                        <label className="font-semibold">
-                            Description
-                        </label>
+                        + New Game
 
-                        <textarea
-                            rows={6}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full border rounded-lg p-3 mt-2"
-                        />
-
-                    </div>
+                    </button>
 
                 </div>
 
-                {/* =======================
-IMAGES
-======================= */}
+            </div>
 
-                <div>
+            <div className="mx-auto max-w-7xl px-6 py-10">
 
-                    <h2 className="text-2xl font-bold mb-5">
-                        Images
-                    </h2>
+                {/* Search */}
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                <div className="mb-8">
 
-                        <div>
-
-                            <label className="font-semibold">
-                                Game Icon
-                            </label>
-
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) =>
-                                    setIconFile(
-                                        e.target.files?.[0] || null
-                                    )
-                                }
-                                className="mt-2 block w-full"
-                            />
-
-                            {editingGame?.icon && (
-
-                                <Image
-                                    src={editingGame.icon}
-                                    alt=""
-                                    width={120}
-                                    height={120}
-                                    className="rounded-lg mt-4 border"
-                                />
-
-                            )}
-
-                        </div>
-
-                        <div>
-
-                            <label className="font-semibold">
-                                Banner
-                            </label>
-
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) =>
-                                    setBannerFile(
-                                        e.target.files?.[0] || null
-                                    )
-                                }
-                                className="mt-2 block w-full"
-                            />
-
-                            {editingGame?.banner && (
-
-                                <Image
-                                    src={editingGame.banner}
-                                    alt=""
-                                    width={350}
-                                    height={180}
-                                    className="rounded-lg mt-4 border"
-                                />
-
-                            )}
-
-                        </div>
-
-                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search Games..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="h-14 w-full rounded-2xl border border-zinc-700 bg-[#111111] px-5 outline-none focus:border-orange-500"
+                    />
 
                 </div>
+                <form
+                    onSubmit={uploadBlog}
+                    className="mt-10 rounded-3xl border border-zinc-800 bg-[#111111] p-8"
+                >
 
-                {/* =======================
-GAME INFORMATION
-======================= */}
-
-                <div>
-
-                    <h2 className="text-2xl font-bold mb-5">
-                        Game Information
+                    <h2 className="mb-8 text-3xl font-black">
+                        📝 Blog Publisher
                     </h2>
 
-                    <div className="grid md:grid-cols-2 gap-5">
+                    <div className="grid gap-6 md:grid-cols-2">
 
                         <input
-                            placeholder="Game Version"
-                            value={version}
-                            onChange={(e) => setVersion(e.target.value)}
-                            className="border rounded-lg p-3"
+                            placeholder="Blog Title"
+                            value={blogTitle}
+                            onChange={(e) => setBlogTitle(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4"
                         />
 
                         <input
-                            placeholder="MOD Version"
-                            value={modVersion}
-                            onChange={(e) => setModVersion(e.target.value)}
-                            className="border rounded-lg p-3"
+                            placeholder="Slug"
+                            value={blogSlug}
+                            onChange={(e) => setBlogSlug(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4"
                         />
+                        <div className="space-y-2">
+                            <label className="font-semibold">
+                                Related Game
+                            </label>
+                            <p className="text-red-500">
+                                Total Games: {gamesList.length}
+                            </p>
+                            <select
+                                value={gameId ?? ""}
+                                onChange={(e) => {
+                                    const selected = gamesList.find(
+                                        (g) => g.id === Number(e.target.value)
+                                    );
+
+                                    setGameId(selected?.id || null);
+                                    setGameSlug(selected?.slug || "");
+                                }}
+                            >
+                                <option value="">Select Game</option>
+
+                                {gamesList.map((game) => (
+                                    <option key={game.id} value={game.id}>
+                                        {game.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         <input
-                            placeholder="Developer"
-                            value={developer}
-                            onChange={(e) => setDeveloper(e.target.value)}
-                            className="border rounded-lg p-3"
-                        />
-
-                        <input
-                            placeholder="Publisher"
-                            value={publisher}
-                            onChange={(e) => setPublisher(e.target.value)}
-                            className="border rounded-lg p-3"
-                        />
-
-                        <input
-                            placeholder="Android Version"
-                            value={android}
-                            onChange={(e) => setAndroid(e.target.value)}
-                            className="border rounded-lg p-3"
-                        />
-
-                        <input
-                            placeholder="APK Size"
-                            value={size}
-                            onChange={(e) => setSize(e.target.value)}
-                            className="border rounded-lg p-3"
+                            placeholder="Author"
+                            value={blogAuthor}
+                            onChange={(e) => setBlogAuthor(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4"
                         />
 
                         <input
                             placeholder="Category"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className="border rounded-lg p-3"
+                            value={blogCategory}
+                            onChange={(e) => setBlogCategory(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4"
                         />
 
                         <input
                             placeholder="Tags (comma separated)"
-                            value={tags}
-                            onChange={(e) => setTags(e.target.value)}
-                            className="border rounded-lg p-3"
+                            value={blogTags}
+                            onChange={(e) => setBlogTags(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4 md:col-span-2"
                         />
 
-                    </div>
-
-                </div>
-
-                {/* =======================
-DOWNLOAD LINKS
-======================= */}
-
-                <div>
-
-                    <h2 className="text-2xl font-bold mb-5">
-                        Download Links
-                    </h2>
-
-                    <div className="grid md:grid-cols-2 gap-5">
-
-                        <input
-                            placeholder="Play Store Link"
-                            value={playstore}
-                            onChange={(e) => setPlaystore(e.target.value)}
-                            className="border rounded-lg p-3"
+                        <textarea
+                            rows={3}
+                            placeholder="Short Description"
+                            value={blogShortDescription}
+                            onChange={(e) => setBlogShortDescription(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4 md:col-span-2"
                         />
 
-                        <input
-                            placeholder="Original APK Link"
-                            value={originalApk}
-                            onChange={(e) => setOriginalApk(e.target.value)}
-                            className="border rounded-lg p-3"
+                        <textarea
+                            rows={12}
+                            placeholder="Full Blog Content"
+                            value={blogContent}
+                            onChange={(e) => setBlogContent(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4 md:col-span-2"
                         />
 
-                        <input
-                            placeholder="MOD APK Link"
-                            value={modApk}
-                            onChange={(e) => setModApk(e.target.value)}
-                            className="border rounded-lg p-3"
-                        />
+                        <div className="md:col-span-2">
 
-                        <input
-                            placeholder="Mirror Download Link"
-                            value={mirror}
-                            onChange={(e) => setMirror(e.target.value)}
-                            className="border rounded-lg p-3"
-                        />
-
-                    </div>
-
-                </div>
-                {/* =======================
-MOD CONTENT
-======================= */}
-
-                <div>
-
-                    <h2 className="text-2xl font-bold mb-5">
-                        MOD Content
-                    </h2>
-
-                    <div className="space-y-5">
-
-                        <div>
-
-                            <label className="font-semibold">
-                                MOD Features
-                            </label>
-
-                            <textarea
-                                rows={6}
-                                value={modFeatures}
-                                onChange={(e) => setModFeatures(e.target.value)}
-                                placeholder="Unlimited Money, No Ads, Unlock All..."
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <label className="font-semibold">
-                                What's New
-                            </label>
-
-                            <textarea
-                                rows={5}
-                                value={whatsNew}
-                                onChange={(e) => setWhatsNew(e.target.value)}
-                                placeholder="Latest changes..."
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <label className="font-semibold">
-                                FAQ
-                            </label>
-
-                            <textarea
-                                rows={6}
-                                value={faq}
-                                onChange={(e) => setFaq(e.target.value)}
-                                placeholder="Frequently Asked Questions..."
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {/* =======================
-SEO
-======================= */}
-
-                <div>
-
-                    <h2 className="text-2xl font-bold mb-5">
-                        SEO Settings
-                    </h2>
-
-                    <div className="space-y-5">
-
-                        <div>
-
-                            <label className="font-semibold">
-                                SEO Title
+                            <label className="mb-2 block font-bold">
+                                Blog Banner
                             </label>
 
                             <input
-                                type="text"
-                                value={seoTitle}
-                                onChange={(e) => setSeoTitle(e.target.value)}
-                                className="w-full border rounded-lg p-3 mt-2"
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setBlogBanner(e.target.files?.[0] || null)
+                                }
                             />
 
                         </div>
 
-                        <div>
+                        <input
+                            placeholder="SEO Title"
+                            value={blogSeoTitle}
+                            onChange={(e) => setBlogSeoTitle(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4 md:col-span-2"
+                        />
 
-                            <label className="font-semibold">
-                                SEO Description
-                            </label>
+                        <textarea
+                            rows={3}
+                            placeholder="SEO Description"
+                            value={blogSeoDescription}
+                            onChange={(e) => setBlogSeoDescription(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4 md:col-span-2"
+                        />
 
-                            <textarea
-                                rows={4}
-                                value={seoDescription}
-                                onChange={(e) => setSeoDescription(e.target.value)}
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
+                        <textarea
+                            rows={2}
+                            placeholder="SEO Keywords"
+                            value={blogSeoKeywords}
+                            onChange={(e) => setBlogSeoKeywords(e.target.value)}
+                            className="rounded-xl bg-zinc-900 p-4 md:col-span-2"
+                        />
 
-                        </div>
-
-                        <div>
-
-                            <label className="font-semibold">
-                                SEO Keywords
-                            </label>
-
-                            <input
-                                type="text"
-                                value={seoKeywords}
-                                onChange={(e) => setSeoKeywords(e.target.value)}
-                                placeholder="game mod, apk, unlimited money..."
-                                className="w-full border rounded-lg p-3 mt-2"
-                            />
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {/* =======================
-HOMEPAGE SETTINGS
-======================= */}
-
-                <div>
-
-                    <h2 className="text-2xl font-bold mb-5">
-                        Homepage Settings
-                    </h2>
-
-                    <div className="flex flex-wrap gap-8">
-
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex items-center gap-3">
 
                             <input
                                 type="checkbox"
-                                checked={featured}
-                                onChange={(e) => setFeatured(e.target.checked)}
+                                checked={blogFeatured}
+                                onChange={(e) =>
+                                    setBlogFeatured(e.target.checked)
+                                }
                             />
 
-                            <span>Featured Game</span>
-
-                        </label>
-
-                        <label className="flex items-center gap-2 cursor-pointer">
-
-                            <input
-                                type="checkbox"
-                                checked={trending}
-                                onChange={(e) => setTrending(e.target.checked)}
-                            />
-
-                            <span>Trending Game</span>
-
-                        </label>
-
-                        <label className="flex items-center gap-2 cursor-pointer">
-
-                            <input
-                                type="checkbox"
-                                checked={popular}
-                                onChange={(e) => setPopular(e.target.checked)}
-                            />
-
-                            <span>Popular Game</span>
+                            Featured Blog
 
                         </label>
 
                     </div>
-
-                </div>
-
-                {/* =======================
-ACTION BUTTONS
-======================= */}
-
-                <div className="flex flex-wrap gap-4 pt-4">
 
                     <button
                         type="submit"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition"
+                        className="mt-8 w-full rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 py-4 text-xl font-black"
                     >
-                        {editingGame ? "Update Game" : "Upload Game"}
+                        {editingBlog ? "Update Blog" : "Publish Blog"}
                     </button>
 
-                    {editingGame && (
+                </form>
 
-                        <button
-                            type="button"
-                            onClick={resetForm}
-                            className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition"
-                        >
-                            Cancel Editing
-                        </button>
+                <div className="mt-12 rounded-3xl border border-zinc-800 bg-[#111111] p-8">
 
-                    )}
+                    <h2 className="mb-8 text-3xl font-black">
+                        📝 All Blogs
+                    </h2>
 
-                </div>
+                    <div className="space-y-5">
 
-            </form>
-            {/* =======================
-SEARCH
-======================= */}
+                        {blogs.map((blog) => (
 
-            <div className="mt-10 mb-6">
+                            <div
+                                key={blog.id}
+                                className="flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-zinc-900 p-5 md:flex-row md:items-center"
+                            >
 
-                <h2 className="text-2xl font-bold mb-4">
-                    Uploaded Games
-                </h2>
+                                <img
+                                    src={blog.banner}
+                                    alt={blog.title}
+                                    className="h-28 w-full rounded-xl object-cover md:w-48"
+                                />
 
-                <input
-                    type="text"
-                    placeholder="Search game..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full border rounded-lg p-3"
-                />
+                                <div className="flex-1">
 
-            </div>
+                                    <h3 className="text-2xl font-black">
+                                        {blog.title}
+                                    </h3>
 
-            {/* =======================
-GAMES TABLE
-======================= */}
+                                    <p className="mt-2 text-sm text-zinc-400">
+                                        {blog.short_description}
+                                    </p>
 
-            <div className="overflow-x-auto rounded-xl border bg-white shadow">
+                                    <div className="mt-3 flex flex-wrap gap-4 text-sm text-zinc-500">
 
-                <table className="w-full">
+                                        <span>
+                                            👁 {blog.views}
+                                        </span>
 
-                    <thead className="bg-gray-100">
+                                        <span>
+                                            📂 {blog.category}
+                                        </span>
 
-                        <tr>
-
-                            <th className="p-4 text-left">Icon</th>
-
-                            <th className="p-4 text-left">Game</th>
-
-                            <th className="p-4 text-left">Version</th>
-
-                            <th className="p-4 text-left">Category</th>
-
-                            <th className="p-4 text-left">Status</th>
-
-                            <th className="p-4 text-left">Actions</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {filteredGames.length === 0 ? (
-
-                            <tr>
-
-                                <td
-                                    colSpan={6}
-                                    className="text-center py-10 text-gray-500"
-                                >
-
-                                    No games found.
-
-                                </td>
-
-                            </tr>
-
-                        ) : (
-
-                            filteredGames.map((game) => (
-
-                                <tr
-                                    key={game.id}
-                                    className="border-t hover:bg-gray-50"
-                                >
-
-                                    {/* ICON */}
-
-                                    <td className="p-4">
-
-                                        <Image
-                                            src={game.icon}
-                                            alt={game.title}
-                                            width={60}
-                                            height={60}
-                                            className="rounded-lg border object-cover"
-                                        />
-
-                                    </td>
-
-                                    {/* GAME */}
-
-                                    <td className="p-4">
-
-                                        <div className="font-bold">
-
-                                            {game.title}
-
-                                        </div>
-
-                                        <div className="text-sm text-gray-500">
-
-                                            {game.slug}
-
-                                        </div>
-
-                                        {game.banner && (
-
-                                            <Image
-                                                src={game.banner}
-                                                alt={game.title}
-                                                width={180}
-                                                height={90}
-                                                className="rounded mt-3 border"
-                                            />
-
+                                        {blog.featured && (
+                                            <span className="rounded-full bg-orange-500 px-3 py-1 text-white">
+                                                ⭐ Featured
+                                            </span>
                                         )}
 
-                                    </td>
+                                    </div>
 
-                                    {/* VERSION */}
+                                </div>
 
-                                    <td className="p-4">
+                                <div className="flex gap-3">
 
-                                        <div>{game.version}</div>
+                                    <button
+                                        onClick={() => editBlog(blog)}
+                                        className="rounded-xl bg-blue-600 px-5 py-3 font-bold"
+                                    >
+                                        ✏ Edit
+                                    </button>
 
-                                        <div className="text-green-600 text-sm">
+                                    <button
+                                        onClick={() => deleteBlog(blog.id)}
+                                        className="rounded-xl bg-red-600 px-5 py-3 font-bold"
+                                    >
+                                        🗑 Delete
+                                    </button>
 
-                                            MOD {game.mod_version}
+                                </div>
 
-                                        </div>
+                            </div>
 
-                                    </td>
+                        ))}
 
-                                    {/* CATEGORY */}
+                    </div>
 
-                                    <td className="p-4">
+                </div>
+                {/* Form */}
 
-                                        <div>{game.category}</div>
+                <form
+                    onSubmit={uploadGame}
+                    className="space-y-8"
+                >
 
-                                        <div className="text-sm text-gray-500">
+                    {/* Basic Information */}
 
-                                            {game.size}
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
 
-                                        </div>
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
 
-                                    </td>
+                            Basic Information
 
-                                    {/* STATUS */}
+                        </h2>
 
-                                    <td className="p-4">
+                        <div className="grid gap-6 md:grid-cols-2">
 
-                                        <div className="flex flex-wrap gap-2">
+                            <div>
 
-                                            {game.featured && (
+                                <label className="mb-2 block font-semibold">
 
-                                                <span className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-semibold">
+                                    Game Title
 
-                                                    Featured
+                                </label>
 
-                                                </span>
+                                <input
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
 
-                                            )}
+                            </div>
 
-                                            {game.trending && (
+                            <div>
 
-                                                <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                                <label className="mb-2 block font-semibold">
 
-                                                    Trending
+                                    Slug
 
-                                                </span>
+                                </label>
 
-                                            )}
+                                <input
+                                    value={slug}
+                                    onChange={(e) => setSlug(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
 
-                                            {game.popular && (
+                            </div>
 
-                                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold">
+                        </div>
 
-                                                    Popular
+                        <div className="mt-6">
 
-                                                </span>
+                            <label className="mb-2 block font-semibold">
 
-                                            )}
+                                Short Description
 
-                                        </div>
+                            </label>
 
-                                    </td>
+                            <textarea
+                                rows={3}
+                                value={shortDescription}
+                                onChange={(e) => setShortDescription(e.target.value)}
+                                className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
 
-                                    {/* ACTIONS */}
+                        </div>
 
-                                    <td className="p-4">
+                        <div className="mt-6">
 
-                                        <div className="flex gap-3">
+                            <label className="mb-2 block font-semibold">
 
-                                            <button
-                                                onClick={() => editGame(game)}
-                                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                                            >
+                                Full Description
 
-                                                Edit
+                            </label>
 
-                                            </button>
+                            <textarea
+                                rows={8}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
 
-                                            <button
-                                                onClick={() => deleteGame(game.id)}
-                                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                                            >
+                        </div>
 
-                                                Delete
+                    </div>
+                    {/* Images */}
 
-                                            </button>
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
 
-                                        </div>
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
 
-                                    </td>
+                            Images
+
+                        </h2>
+
+                        <div className="grid gap-6 md:grid-cols-2">
+
+                            <div>
+
+                                <label className="mb-3 block font-semibold">
+
+                                    Game Icon
+
+                                </label>
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) =>
+                                        setIconFile(e.target.files?.[0] || null)
+                                    }
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-3 block font-semibold">
+
+                                    Game Banner
+
+                                </label>
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) =>
+                                        setBannerFile(e.target.files?.[0] || null)
+                                    }
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                        </div>
+
+                        <h3 className="mt-10 mb-5 text-xl font-bold">
+
+                            Game Screenshots
+
+                        </h3>
+
+                        <div className="grid gap-5 md:grid-cols-3">
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setScreenshot1(e.target.files?.[0] || null)
+                                }
+                                className="rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setScreenshot2(e.target.files?.[0] || null)
+                                }
+                                className="rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setScreenshot3(e.target.files?.[0] || null)
+                                }
+                                className="rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setScreenshot4(e.target.files?.[0] || null)
+                                }
+                                className="rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setScreenshot5(e.target.files?.[0] || null)
+                                }
+                                className="rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setScreenshot6(e.target.files?.[0] || null)
+                                }
+                                className="rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                            />
+
+                        </div>
+
+                    </div>
+                    {/* Game Information */}
+
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
+
+                            Game Information
+
+                        </h2>
+
+                        <div className="grid gap-6 md:grid-cols-2">
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Game Version
+                                </label>
+
+                                <input
+                                    value={version}
+                                    onChange={(e) => setVersion(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    MOD Version
+                                </label>
+
+                                <input
+                                    value={modVersion}
+                                    onChange={(e) => setModVersion(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Android Version
+                                </label>
+
+                                <input
+                                    value={android}
+                                    onChange={(e) => setAndroid(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Game Size
+                                </label>
+
+                                <input
+                                    value={size}
+                                    onChange={(e) => setSize(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Rating
+                                </label>
+
+                                <input
+                                    value={rating}
+                                    onChange={(e) => setRating(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Downloads
+                                </label>
+
+                                <input
+                                    value={downloads}
+                                    onChange={(e) => setDownloads(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Developer
+                                </label>
+
+                                <input
+                                    value={developer}
+                                    onChange={(e) => setDeveloper(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Publisher
+                                </label>
+
+                                <input
+                                    value={publisher}
+                                    onChange={(e) => setPublisher(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Category
+                                </label>
+
+                                <input
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block font-semibold">
+                                    Tags (comma separated)
+                                </label>
+
+                                <input
+                                    value={tags}
+                                    onChange={(e) => setTags(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+                            </div>
+
+                        </div>
+
+                    </div>
+                    {/* Download Links */}
+
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
+
+                            Download Links
+
+                        </h2>
+
+                        <div className="grid gap-6 md:grid-cols-2">
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+                                    Play Store Link
+                                </label>
+
+                                <input
+                                    value={playstore}
+                                    onChange={(e) => setPlaystore(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+                                    Original APK Link
+                                </label>
+
+                                <input
+                                    value={originalApk}
+                                    onChange={(e) => setOriginalApk(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+                                    MOD APK Link
+                                </label>
+
+                                <input
+                                    value={modApk}
+                                    onChange={(e) => setModApk(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+                                    Mirror Link
+                                </label>
+
+                                <input
+                                    value={mirror}
+                                    onChange={(e) => setMirror(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {/* SEO */}
+
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
+
+                            SEO Settings
+
+                        </h2>
+
+                        <div className="space-y-6">
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+
+                                    SEO Title
+
+                                </label>
+
+                                <input
+                                    value={seoTitle}
+                                    onChange={(e) => setSeoTitle(e.target.value)}
+                                    className="h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+
+                                    SEO Description
+
+                                </label>
+
+                                <textarea
+                                    rows={4}
+                                    value={seoDescription}
+                                    onChange={(e) => setSeoDescription(e.target.value)}
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+
+                                    SEO Keywords
+
+                                </label>
+
+                                <textarea
+                                    rows={3}
+                                    value={seoKeywords}
+                                    onChange={(e) => setSeoKeywords(e.target.value)}
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    {/* MOD Content */}
+
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
+
+                            MOD Content
+
+                        </h2>
+
+                        <div className="space-y-6">
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+
+                                    MOD Features
+
+                                </label>
+
+                                <textarea
+                                    rows={6}
+                                    value={modFeatures}
+                                    onChange={(e) => setModFeatures(e.target.value)}
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <label className="mb-2 block font-semibold">
+
+                                    What's New
+
+                                </label>
+
+                                <textarea
+                                    rows={5}
+                                    value={whatsNew}
+                                    onChange={(e) => setWhatsNew(e.target.value)}
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {/* FAQ */}
+
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
+
+                            Frequently Asked Questions
+
+                        </h2>
+
+                        {[1, 2, 3, 4].map((num) => (
+
+                            <div key={num} className="mb-8 rounded-2xl border border-zinc-700 p-5">
+
+                                <h3 className="mb-4 font-bold text-orange-400">
+
+                                    FAQ {num}
+
+                                </h3>
+
+                                <input
+                                    placeholder={`Question ${num}`}
+                                    value={
+                                        num === 1 ? faq1Question :
+                                            num === 2 ? faq2Question :
+                                                num === 3 ? faq3Question :
+                                                    faq4Question
+                                    }
+                                    onChange={(e) => {
+                                        if (num === 1) setFaq1Question(e.target.value);
+                                        if (num === 2) setFaq2Question(e.target.value);
+                                        if (num === 3) setFaq3Question(e.target.value);
+                                        if (num === 4) setFaq4Question(e.target.value);
+                                    }}
+                                    className="mb-4 h-14 w-full rounded-xl border border-zinc-700 bg-[#090909] px-4"
+                                />
+
+                                <textarea
+                                    rows={4}
+                                    placeholder={`Answer ${num}`}
+                                    value={
+                                        num === 1 ? faq1Answer :
+                                            num === 2 ? faq2Answer :
+                                                num === 3 ? faq3Answer :
+                                                    faq4Answer
+                                    }
+                                    onChange={(e) => {
+                                        if (num === 1) setFaq1Answer(e.target.value);
+                                        if (num === 2) setFaq2Answer(e.target.value);
+                                        if (num === 3) setFaq3Answer(e.target.value);
+                                        if (num === 4) setFaq4Answer(e.target.value);
+                                    }}
+                                    className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                />
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                    {/* Homepage */}
+
+                    <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                        <h2 className="mb-8 text-2xl font-black text-orange-500">
+
+                            Homepage Sections
+
+                        </h2>
+
+                        <div className="flex flex-wrap gap-8">
+
+                            <label className="flex items-center gap-3">
+
+                                <input
+                                    type="checkbox"
+                                    checked={featured}
+                                    onChange={(e) => setFeatured(e.target.checked)}
+                                />
+
+                                Featured
+
+                            </label>
+
+                            <label className="flex items-center gap-3">
+
+                                <input
+                                    type="checkbox"
+                                    checked={trending}
+                                    onChange={(e) => setTrending(e.target.checked)}
+                                />
+
+                                Trending
+
+                            </label>
+
+                            <label className="flex items-center gap-3">
+
+                                <input
+                                    type="checkbox"
+                                    checked={popular}
+                                    onChange={(e) => setPopular(e.target.checked)}
+                                />
+
+                                Popular
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div className="flex justify-end">
+
+                        <button
+                            type="submit"
+                            className="rounded-2xl bg-gradient-to-r from-orange-500 to-red-600 px-10 py-4 text-lg font-black text-white transition hover:scale-105"
+                        >
+
+                            {editingGame ? "Update Game" : "Upload Game"}
+
+                        </button>
+
+                    </div>
+                </form>
+
+                {/* Games List */}
+
+                <div className="mt-12 rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+
+                    <div className="mb-8 flex items-center justify-between">
+
+                        <h2 className="text-2xl font-black text-orange-500">
+
+                            Uploaded Games ({filteredGames.length})
+
+                        </h2>
+
+                    </div>
+
+                    <div className="overflow-x-auto">
+
+                        <table className="w-full">
+
+                            <thead>
+
+                                <tr className="border-b border-zinc-800">
+
+                                    <th className="p-4 text-left">Game</th>
+
+                                    <th className="p-4 text-left">Version</th>
+
+                                    <th className="p-4 text-left">Category</th>
+
+                                    <th className="p-4 text-left">Updated</th>
+
+                                    <th className="p-4 text-center">Actions</th>
 
                                 </tr>
 
-                            ))
+                            </thead>
 
-                        )}
+                            <tbody>
 
-                    </tbody>
+                                {filteredGames.map((game) => (
 
-                </table>
+                                    <tr
+                                        key={game.id}
+                                        className="border-b border-zinc-800 hover:bg-zinc-900"
+                                    >
+
+                                        <td className="p-4">
+
+                                            <div className="flex items-center gap-4">
+
+                                                <Image
+                                                    src={game.icon}
+                                                    alt={game.title}
+                                                    width={60}
+                                                    height={60}
+                                                    className="rounded-xl"
+                                                />
+
+                                                <div>
+
+                                                    <h3 className="font-bold">
+
+                                                        {game.title}
+
+                                                    </h3>
+
+                                                    <p className="text-sm text-zinc-400">
+
+                                                        {game.slug}
+
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td className="p-4">
+
+                                            {game.version}
+
+                                        </td>
+
+                                        <td className="p-4">
+
+                                            {game.category}
+
+                                        </td>
+
+                                        <td className="p-4">
+
+                                            {game.updated_at
+                                                ? new Date(game.updated_at).toLocaleDateString()
+                                                : "-"}
+
+                                        </td>
+
+                                        <td className="p-4">
+
+                                            <div className="flex justify-center gap-3">
+
+                                                <button
+                                                    onClick={() => editGame(game)}
+                                                    className="rounded-xl bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700"
+                                                >
+
+                                                    Edit
+
+                                                </button>
+
+                                                <button
+                                                    onClick={() => deleteGame(game.id)}
+                                                    className="rounded-xl bg-red-600 px-4 py-2 font-semibold hover:bg-red-700"
+                                                >
+
+                                                    Delete
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+        </main>
 
     );
+
 }
