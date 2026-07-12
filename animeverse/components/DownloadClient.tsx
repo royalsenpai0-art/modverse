@@ -56,10 +56,16 @@ export default function DownloadClient({
                 localStorage.setItem(key, "true");
             }
         } catch (error) {
-            console.error("Download counter error:", error);
+            console.error(error);
         }
 
-        window.open(downloadUrl, "_blank");
+        // Monetag Direct Link
+        window.open("https://omg10.com/4/11275829", "_blank");
+
+        // APK Download (300ms baad)
+        setTimeout(() => {
+            window.location.href = downloadUrl;
+        }, 300);
 
         setLoading(false);
     }

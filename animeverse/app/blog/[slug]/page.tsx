@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
+import InPagePush from "@/components/InPagePush";
 import Footer from "@/components/Footer";
 import ShareButtons from "@/components/ShareButton";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
@@ -144,12 +145,13 @@ export default async function BlogPage({
 
                     <div className="mt-8">
 
-                       <ShareButtons title={blog.title} />
+                        <ShareButtons title={blog.title} />
 
                     </div>
 
                     {/* Blog */}
 
+                    <InPagePush />
                     <article className="prose prose-invert mt-10 max-w-none whitespace-pre-line leading-8">
 
                         {blog.content}

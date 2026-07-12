@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
+import InPagePush from "@/components/InPagePush";
 import Hero from "@/components/Hero";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
 import { supabase } from "@/lib/supabase";
@@ -44,7 +45,7 @@ export default async function Home() {
       <Header />
 
       <Hero />
-
+      <InPagePush />
       <main className="min-h-screen bg-[#0a0a0a] text-white">
         {/* ================= HERO ================= */}
 

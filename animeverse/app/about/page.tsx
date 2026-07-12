@@ -139,21 +139,7 @@ export default function AboutPage() {
 
                     {/* Advertisement */}
 
-                    <div className="mt-10 rounded-3xl border-2 border-dashed border-zinc-700 bg-zinc-900 p-10 text-center">
 
-                        <h2 className="text-2xl font-black">
-
-                            Advertisement
-
-                        </h2>
-
-                        <p className="mt-3 text-zinc-500">
-
-                            Adsterra / Monetag Banner (728×90)
-
-                        </p>
-
-                    </div>
 
                     {/* Contact CTA */}
 

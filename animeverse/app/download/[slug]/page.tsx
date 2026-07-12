@@ -499,6 +499,7 @@ export default async function DownloadPage({
 
             </section>
             <WhatsAppSticky />
+            
             <Footer />
 
         </main>
