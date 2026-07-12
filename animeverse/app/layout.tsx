@@ -114,13 +114,6 @@ export default function RootLayout({
     gtag('config', 'G-KNERTYSZJJ');
   `}
         </Script>
-        <Script
-          src="https://quge5.com/88/tag.min.js"
-          data-zone="258781"
-          strategy="afterInteractive"
-          async
-          data-cfasync="false"
-        />
       </body>
     </html>
   );
