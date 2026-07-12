@@ -23,7 +23,9 @@ export const metadata: Metadata = {
     "MODVerse",
   ],
 
-  
+  other: {
+    monetag: "a8b7217df57e73ea62f8f43be3c249df",
+  },
 
   openGraph: {
     title: "MODVerse",
@@ -74,6 +76,7 @@ export default function RootLayout({
   };
 
   return (
+
     <html lang="en">
       <body>
         <script
