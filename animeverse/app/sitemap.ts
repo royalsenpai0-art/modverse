@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
-  const siteUrl = "https://modverse.com";
+  const siteUrl = "https://modversepk.online";
 
   const { data: games } = await supabase
     .from("games")

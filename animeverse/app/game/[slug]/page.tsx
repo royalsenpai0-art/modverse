@@ -31,7 +31,7 @@ export async function generateMetadata({
         };
     }
 
-    const url = `https://YOURDOMAIN.com/game/${game.slug}`;
+    const url = `https://modversepk.online/game/${game.slug}`;
 
     return {
         title: game.seo_title || game.title,
@@ -118,7 +118,7 @@ export default async function GamePage({
 
         image: game.banner,
 
-        url: `https://YOURDOMAIN.com/game/${game.slug}`,
+        url: `https://modversepk.online/game/${game.slug}`,
 
         author: {
             "@type": "Organization",
@@ -182,13 +182,13 @@ export default async function GamePage({
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://YOURDOMAIN.com",
+                item: "https://modversepk.online",
             },
             {
                 "@type": "ListItem",
                 position: 2,
                 name: game.category,
-                item: `https://YOURDOMAIN.com/category/${game.category
+                item: `https://modversepk.online/category/${game.category
                     .toLowerCase()
                     .replace(/\s+/g, "-")}`,
             },
@@ -196,7 +196,7 @@ export default async function GamePage({
                 "@type": "ListItem",
                 position: 3,
                 name: game.title,
-                item: `https://YOURDOMAIN.com/game/${game.slug}`,
+                item: `https://modversepk.online/game/${game.slug}`,
             },
         ],
     };

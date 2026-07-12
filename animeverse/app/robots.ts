@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
 
-  const siteUrl = "https://modverse.com";
+  const siteUrl = "https://modversepk.online";
 
   return {
     rules: [

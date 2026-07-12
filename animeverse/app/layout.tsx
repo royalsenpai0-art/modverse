@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://YOURDOMAIN.com"),
+  metadataBase: new URL("https://modversepk.online"),
 
   title: {
     default: "MODVerse",
@@ -30,11 +30,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MODVerse",
     description: "Download the latest MOD APK games safely and for free.",
-    url: "https://YOURDOMAIN.com",
+    url: "https://modversepk.online",
     siteName: "MODVerse",
     images: [
       {
-        url: "https://YOURDOMAIN.com/logo.png",
+        url: "https://modversepk.online/logo.png",
         width: 512,
         height: 512,
       },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MODVerse",
     description: "Download the latest MOD APK games safely and for free.",
-    images: ["https://YOURDOMAIN.com/logo.png"],
+    images: ["https://modversepk.online/logo.png"],
   },
 };
 
@@ -59,10 +59,10 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "MODVerse",
-    url: "https://YOURDOMAIN.com",
+    url: "https://modversepk.online",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://YOURDOMAIN.com/search?q={search_term_string}",
+      target: "https://modversepk.online/search?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   };
@@ -71,8 +71,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "MODVerse",
-    url: "https://YOURDOMAIN.com",
-    logo: "https://YOURDOMAIN.com/logo.png",
+    url: "https://modversepk.online",
+    logo: "https://modversepk.online/logo.png",
   };
 
   return (
