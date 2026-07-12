@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
 import Script from "next/script";
+import MonetagAds from "@/components/MonetagAds";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -114,6 +115,7 @@ export default function RootLayout({
     gtag('config', 'G-KNERTYSZJJ');
   `}
         </Script>
+        <MonetagAds />
       </body>
     </html>
   );
