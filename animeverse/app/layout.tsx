@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
+import Script from "next/script";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -22,10 +23,7 @@ export const metadata: Metadata = {
     "MODVerse",
   ],
 
-  verification: {
-    google: "GOOGLE_VERIFICATION_CODE",
   
-  },
 
   openGraph: {
     title: "MODVerse",
@@ -100,6 +98,19 @@ export default function RootLayout({
           position="bottom-right"
           reverseOrder={false}
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-KNERTYSZJJ"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KNERTYSZJJ');
+  `}
+        </Script>
       </body>
     </html>
   );
