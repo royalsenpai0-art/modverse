@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
+export const dynamic = "force-dynamic";
 import InPagePush from "@/components/InPagePush";
 import Hero from "@/components/Hero";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
