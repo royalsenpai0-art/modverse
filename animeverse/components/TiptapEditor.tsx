@@ -68,7 +68,7 @@ export default function TiptapEditor({
 
         if (editor.getHTML() !== value) {
 
-            editor.commands.setContent(value || "", false);
+           editor.commands.setContent(value || "");
 
         }
 
