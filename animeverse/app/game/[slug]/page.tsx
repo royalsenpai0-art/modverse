@@ -386,8 +386,8 @@ export default async function GamePage({
                             📖 About {game.title}
                         </h2>
 
-                        <p className="leading-8 text-zinc-300 whitespace-pre-line">
-                            {game.description}
+                        <p className="leading-8 text-zinc-300">
+                            {game.short_description}
                         </p>
 
                     </div>
@@ -904,12 +904,12 @@ export default async function GamePage({
 
                         </h2>
 
-                        <p className="leading-8 text-zinc-300">
-
-                            {game.seo_description || game.description}
-
-                        </p>
-
+                        <div
+                            className="prose prose-invert max-w-none prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-zinc-300 prose-p:leading-8 prose-strong:text-white prose-a:text-orange-500"
+                            dangerouslySetInnerHTML={{
+                                __html: game.description || "",
+                            }}
+                        />
                         {/* Tags */}
 
                         <h2 className="mt-10 mb-5 text-3xl font-black text-white">

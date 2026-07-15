@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import TiptapEditor from "@/components/TiptapEditor";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
@@ -1200,11 +1201,9 @@ export default function AdminPage() {
 
                             </label>
 
-                            <textarea
-                                rows={8}
+                            <TiptapEditor
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                className="w-full rounded-xl border border-zinc-700 bg-[#090909] p-4"
+                                onChange={setDescription}
                             />
 
                         </div>
