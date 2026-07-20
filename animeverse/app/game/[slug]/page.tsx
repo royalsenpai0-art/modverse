@@ -1,7 +1,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import InPagePush from "@/components/InPagePush";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
@@ -394,7 +393,7 @@ export default async function GamePage({
 
                 </section>
 
-                <InPagePush />
+               
 
                 {/* ================= MOD FEATURES ================= */}
 
