@@ -1,16 +1,3 @@
-// components/MonetagAds.tsx
-"use client";
-
-import Script from "next/script";
-
 export default function MonetagAds() {
-  return (
-    <Script
-      id="monetag-inpage-push"
-      src="https://quge5.com/88/tag.min.js"
-      strategy="afterInteractive"
-      data-zone="258781"
-      data-cfasync="false"
-    />
-  );
+  return null;
 }

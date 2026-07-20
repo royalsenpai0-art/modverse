@@ -101,6 +101,8 @@ export default function RootLayout({
         {children}
 
 
+        const pathname = usePathname();
+
         <AdsWrapper />
         <CookieConsent />
 
