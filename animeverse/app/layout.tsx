@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: {
     default: "MODVerse",
     template: "%s | MODVerse",
-  
+
   },
 
   description:
@@ -100,8 +100,8 @@ export default function RootLayout({
 
         {children}
 
-       
-<AdsWrapper />
+
+        <AdsWrapper />
         <CookieConsent />
 
         <Toaster
