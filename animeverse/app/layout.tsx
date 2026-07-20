@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
 import Script from "next/script";
+import AdsWrapper from "@/components/AdsWrapper";
 
-import MonetagPopunder from "@/components/MonetagPopunder";
+
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   title: {
     default: "MODVerse",
     template: "%s | MODVerse",
+  
   },
 
   description:
@@ -77,6 +79,7 @@ export default function RootLayout({
     logo: "https://modversepk.online/logo.png",
   };
 
+
   return (
 
     <html lang="en">
@@ -97,6 +100,8 @@ export default function RootLayout({
 
         {children}
 
+       
+<AdsWrapper />
         <CookieConsent />
 
         <Toaster
@@ -116,7 +121,7 @@ export default function RootLayout({
     gtag('config', 'G-KNERTYSZJJ');
   `}
         </Script>
-        
+
       </body>
     </html>
   );
