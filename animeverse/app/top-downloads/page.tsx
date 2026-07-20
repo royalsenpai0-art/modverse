@@ -99,7 +99,7 @@ export default async function TopDownloadsPage() {
                                     <div className="relative aspect-[3/4] overflow-hidden">
 
                                         <Image
-                                            src={game.banner || game.icon}
+                                            src={game.icon || game.icon}
                                             alt={game.title}
                                             fill
                                             sizes="(max-width:768px) 50vw,(max-width:1200px) 33vw,20vw"

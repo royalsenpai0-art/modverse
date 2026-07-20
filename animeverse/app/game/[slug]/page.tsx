@@ -65,7 +65,7 @@ export async function generateMetadata({
             card: "summary_large_image",
             title: game.seo_title || game.title,
             description: game.seo_description,
-            images: [game.banner],
+            images: [game.icon],
         },
     };
 }
@@ -393,7 +393,7 @@ export default async function GamePage({
 
                 </section>
 
-               
+
 
                 {/* ================= MOD FEATURES ================= */}
 
@@ -741,21 +741,25 @@ export default async function GamePage({
 
                                 {/* Image */}
 
-                                <Image
-                                    src={item.banner || item.icon}
-                                    alt={item.title}
-                                    width={180}
-                                    height={180}
-                                    className="h-32 w-28 flex-shrink-0 object-cover md:h-40 md:w-60"
-                                />
+                                {/* Icon */}
+
+                                <div className="flex items-center justify-center px-5">
+                                    <Image
+                                        src={item.icon}
+                                        alt={item.title}
+                                        width={90}
+                                        height={90}
+                                        className="h-[90px] w-[90px] rounded-[22px] border border-zinc-700 object-cover transition duration-300 group-hover:scale-105"
+                                    />
+                                </div>
 
                                 {/* Content */}
 
-                                <div className="flex flex-1 flex-col justify-between p-4">
+                                <div className="flex flex-1 flex-col justify-between p-5">
 
                                     <div>
 
-                                        <h3 className="line-clamp-2 text-base font-black transition group-hover:text-orange-500 md:text-2xl">
+                                        <h3 className="line-clamp-2 text-lg font-black transition group-hover:text-orange-500 md:text-2xl">
                                             {item.title}
                                         </h3>
 

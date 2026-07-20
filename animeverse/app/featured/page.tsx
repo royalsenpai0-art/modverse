@@ -59,21 +59,19 @@ export default async function LatestPage() {
                                 className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition duration-300 hover:-translate-y-1 hover:border-green-500"
                             >
 
-                                <div className="relative aspect-[3/4]">
-
+                                <div className="flex justify-center pt-6">
                                     <Image
-                                        src={game.banner || game.icon}
+                                        src={game.icon}
                                         alt={game.title}
-                                        fill
-                                        sizes="250px"
-                                        className="object-cover transition duration-300 group-hover:scale-105"
+                                        width={90}
+                                        height={90}
+                                        className="rounded-3xl border border-zinc-700 object-cover"
                                     />
-
                                 </div>
 
-                                <div className="p-4">
+                                <div className="p-5 text-center">
 
-                                    <h2 className="line-clamp-2 font-bold">
+                                    <h2 className="mt-4 line-clamp-2 text-lg font-bold">
 
                                         {game.title}
 

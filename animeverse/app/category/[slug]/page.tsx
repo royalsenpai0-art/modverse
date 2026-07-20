@@ -90,37 +90,26 @@ export default async function CategoryPage({
 
                                 {/* Banner */}
 
-                                <div className="relative aspect-[3/4] overflow-hidden">
+                                <div className="flex flex-col items-center pt-6">
 
                                     <Image
-                                        src={game.banner || game.icon}
+                                        src={game.icon}
                                         alt={game.title}
-                                        fill
-                                        sizes="(max-width:768px) 50vw,(max-width:1200px) 33vw,20vw"
-                                        className="object-cover transition duration-500 group-hover:scale-110"
+                                        width={90}
+                                        height={90}
+                                        className="rounded-3xl border border-zinc-700 object-cover transition duration-300 group-hover:scale-110"
                                     />
 
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
-
-                                    <span className="absolute left-3 top-3 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white">
-
+                                    <span className="mt-4 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white">
                                         MOD APK
-
-                                    </span>
-
-                                    <span className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1 text-xs text-white backdrop-blur">
-
-                                        ⭐ {game.rating || 5}
-
                                     </span>
 
                                 </div>
-
                                 {/* Content */}
 
-                                <div className="p-4">
+                                <div className="p-5 text-center">
 
-                                    <h2 className="line-clamp-2 text-lg font-bold transition group-hover:text-orange-500">
+                                    <h2 className="mt-4 line-clamp-2 text-lg font-bold transition group-hover:text-orange-500">
 
                                         {game.title}
 
