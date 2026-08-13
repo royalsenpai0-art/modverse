@@ -1,54 +1,125 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { getGameCategories } from "@/lib/game-utils";
 import { supabase } from "@/lib/supabase";
 
-// Next.js performance controller: ISR caching implementation
-// Har 6 ghante baad sitemap build automatic revalidate aur refresh hoga
-export const revalidate = 21600;
+const siteUrl = "https://modversepk.online";
+
+export const revalidate = 21_600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = "https://modversepk.online";
+  const [gamesResponse, blogsResponse] = await Promise.all([
+    supabase.from("games").select("slug,updated_at,category"),
+    supabase.from("blogs").select("slug,updated_at"),
+  ]);
 
-  // Database fetch processing optimization
-  // Sirf zaroori data lanes load ki ja rahi hain execution performance ko maintain karne ke liye
-  const { data: games } = await supabase
-    .from("games")
-    .select("slug, updated_at, image_url"); // Advanced tracking attributes shamil hain
+  const games = gamesResponse.data ?? [];
+  const blogs = blogsResponse.data ?? [];
+  const now = new Date();
 
-  // Dynamic game information portals map configuration
-  const gamePages =
-    games?.map((game) => ({
-      url: `${siteUrl}/game/${game.slug}`,
-      lastModified: game.updated_at ? new Date(game.updated_at) : new Date(),
-      changeFrequency: "always" as const, // Real-time indexing priority signals for Google crawler
-      priority: 0.95, // High crawling target status
-    })) || [];
-
-  // Dedicated dynamic target file packages routing setup
-  const downloadPages =
-    games?.map((game) => ({
-      url: `${siteUrl}/download/${game.slug}`,
-      lastModified: game.updated_at ? new Date(game.updated_at) : new Date(),
-      changeFrequency: "always" as const, // Immediate cache check signal
-      priority: 0.85,
-    })) || [];
-
-  // Authority operational dynamic map paths setups
-  const coreChannels = [
-    { url: siteUrl, lastModified: new Date(), changeFrequency: "always" as const, priority: 1.0 },
-    { url: `${siteUrl}/recently-updated`, lastModified: new Date(), changeFrequency: "always" as const, priority: 0.90 },
-    { url: `${siteUrl}/popular`, lastModified: new Date(), changeFrequency: "always" as const, priority: 0.90 },
-    { url: `${siteUrl}/trending`, lastModified: new Date(), changeFrequency: "always" as const, priority: 0.90 },
-    { url: `${siteUrl}/blog`, lastModified: new Date(), changeFrequency: "daily" as const, priority: 0.80 },
+  const corePages: MetadataRoute.Sitemap = [
+    { url: siteUrl, lastModified: now, changeFrequency: "daily", priority: 1 },
+    {
+      url: `${siteUrl}/categories`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/latest`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/recently-updated`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/featured`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/popular`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/trending`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/top-downloads`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/blog`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/about`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/contact`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/privacy-policy`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.2,
+    },
+    {
+      url: `${siteUrl}/dmca`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.2,
+    },
+    {
+      url: `${siteUrl}/cookies`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.2,
+    },
   ];
 
-  // Global regulatory policy links parameters
-  const legalTrustPortals = [
-    { url: `${siteUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.30 },
-    { url: `${siteUrl}/dmca`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.30 },
-    { url: `${siteUrl}/contact`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.30 },
-    { url: `${siteUrl}/about`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.30 },
-  ];
+  const categoryPages: MetadataRoute.Sitemap = [
+    ...new Set(games.flatMap((game) => getGameCategories(game.category))),
+  ].map((category) => ({
+    url: `${siteUrl}/category/${encodeURIComponent(category)}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
 
-  // Structural arrays optimization merge
-  return [...coreChannels, ...gamePages, ...downloadPages, ...legalTrustPortals];
+  const gamePages: MetadataRoute.Sitemap = games.map((game) => ({
+    url: `${siteUrl}/game/${game.slug}`,
+    lastModified: game.updated_at ? new Date(game.updated_at) : now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
+    url: `${siteUrl}/blog/${blog.slug}`,
+    lastModified: blog.updated_at ? new Date(blog.updated_at) : now,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...corePages, ...categoryPages, ...gamePages, ...blogPages];
 }

@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
+import { displayVersion } from "@/lib/game-utils";
+
+export const metadata: Metadata = {
+    title: "Top Downloaded MOD APK Games",
+    description: "Discover the most downloaded MOD APK games and latest Android versions.",
+    alternates: { canonical: "/top-downloads" },
+};
 
 export default async function TopDownloadsPage() {
 
@@ -170,7 +179,7 @@ export default async function TopDownloadsPage() {
 
                                             <span className="text-zinc-400">
 
-                                                v{game.version}
+                                                {displayVersion(game.version)}
 
                                             </span>
 
@@ -242,6 +251,7 @@ export default async function TopDownloadsPage() {
 
             </main>
 
+            <Footer />
         </>
 
     );

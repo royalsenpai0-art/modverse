@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+
+export const metadata: Metadata = {
+    title: "Trending MOD APK Games",
+    description: "Discover trending MOD APK games and the latest Android releases on MODVerse.",
+    alternates: { canonical: "/trending" },
+};
 
 export default async function LatestPage() {
 
@@ -140,6 +148,7 @@ export default async function LatestPage() {
 
             </main>
 
+            <Footer />
         </>
     );
 

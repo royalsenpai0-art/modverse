@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+    title: "Contact MODVerse",
+    description: "Contact MODVerse for support, partnerships, or copyright-related questions.",
+    alternates: { canonical: "/contact" },
+};
+
+const supportEmail = process.env.SUPPORT_EMAIL?.trim();
 
 export default function ContactPage() {
 
@@ -84,11 +93,18 @@ export default function ContactPage() {
 
                             </p>
 
-                            <p className="mt-8 rounded-xl bg-zinc-800 p-4 text-green-400">
-
-                                your@email.com
-
-                            </p>
+                            {supportEmail ? (
+                                <a
+                                    href={`mailto:${supportEmail}`}
+                                    className="mt-8 block rounded-xl bg-zinc-800 p-4 text-green-400 transition hover:bg-zinc-700 hover:text-green-300"
+                                >
+                                    {supportEmail}
+                                </a>
+                            ) : (
+                                <p className="mt-8 rounded-xl bg-zinc-800 p-4 text-zinc-300">
+                                    For the fastest response, please use WhatsApp support.
+                                </p>
+                            )}
 
                         </div>
 

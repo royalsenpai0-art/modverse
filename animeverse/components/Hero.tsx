@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -32,7 +33,7 @@ export default function Hero() {
 
         if (!query.trim()) return;
 
-        router.push(`/search?query=${encodeURIComponent(query.trim())}`);
+        router.push(`/search?q=${encodeURIComponent(query.trim())}`);
 
     }
 
@@ -169,6 +170,7 @@ export default function Hero() {
                         />
 
                         <button
+                            type="button"
                             onClick={handleSearch}
                             className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 px-8 font-bold text-white transition hover:from-orange-600 hover:to-orange-700"
                         >
@@ -214,9 +216,11 @@ export default function Hero() {
                                         className="flex items-center gap-4 border-b border-zinc-800 px-5 py-4 transition hover:bg-zinc-900"
                                     >
 
-                                        <img
-                                            src={game.icon || "/placeholder.png"}
+                                        <Image
+                                            src={game.icon || "/logo.png"}
                                             alt={game.title}
+                                            width={56}
+                                            height={56}
                                             className="h-14 w-14 rounded-xl object-cover"
                                         />
 
@@ -270,7 +274,7 @@ export default function Hero() {
 
                             <Link
                                 key={game}
-                                href={`/search?query=${encodeURIComponent(game)}`}
+                                href={`/search?q=${encodeURIComponent(game)}`}
                                 className="rounded-full border border-zinc-700 bg-zinc-900 px-5 py-3 text-sm font-semibold text-zinc-300 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500 hover:bg-orange-500 hover:text-white"
                             >
 

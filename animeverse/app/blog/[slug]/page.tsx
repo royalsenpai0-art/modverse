@@ -10,6 +10,7 @@ import BlogDownloadNotification from "@/components/BlogDownloadNotification";
 import { supabase } from "@/lib/supabase";
 
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
     params,
@@ -57,19 +58,7 @@ export default async function BlogPage({
         .single();
 
     if (!blog) {
-
-        return (
-            <main className="flex min-h-screen items-center justify-center bg-[#090909] text-white">
-
-                <h1 className="text-4xl font-black">
-
-                    Blog Not Found
-
-                </h1>
-
-            </main>
-        );
-
+        notFound();
     }
 
     // Related Game

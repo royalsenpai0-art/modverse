@@ -5,8 +5,12 @@ import DownloadClient from "@/components/DownloadClient";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
-import increaseDownload from "@/components/DownloadCounter";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
+import {
+    displayVersion,
+    getCategoryKey,
+    getGameCategories,
+} from "@/lib/game-utils";
 
 export default async function DownloadPage({
     params,
@@ -35,12 +39,24 @@ export default async function DownloadPage({
 
 
     }
-    const { data: relatedGames } = await supabase
+    const { data: relatedGameCandidates } = await supabase
         .from("games")
         .select("*")
-        .eq("category", game.category)
         .neq("id", game.id)
-        .limit(6);
+        .order("updated_at", { ascending: false });
+
+    const gameCategoryKeys = new Set(getGameCategories(game.category).map(getCategoryKey));
+    const relatedGames = (relatedGameCandidates ?? [])
+        .filter((item) =>
+            getGameCategories(item.category).some((category) => gameCategoryKeys.has(getCategoryKey(category))),
+        )
+        .slice(0, 6);
+
+    const androidRequirement = game.android || game.android_version || "See game requirements";
+    const updatedDate = game.updated_at
+        ? new Date(game.updated_at).toLocaleDateString()
+        : "Recently";
+
     return (
 
 
@@ -102,7 +118,7 @@ export default async function DownloadPage({
 
                             <span className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-semibold">
 
-                                Version {game.version}
+                                Version {displayVersion(game.version)}
 
                             </span>
 
@@ -114,7 +130,7 @@ export default async function DownloadPage({
 
                             <span className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-semibold">
 
-                                Android {game.android_version}
+                                Android {androidRequirement}
 
                             </span>
 
@@ -211,7 +227,7 @@ export default async function DownloadPage({
 
                             <h3 className="mt-2 font-bold">
 
-                                {game.android_version}
+                                {androidRequirement}
 
                             </h3>
 
@@ -227,7 +243,7 @@ export default async function DownloadPage({
 
                             <h3 className="mt-2 break-words font-bold">
 
-                                {game.updated_at || "Latest"}
+                                {updatedDate}
 
                             </h3>
 
@@ -384,7 +400,7 @@ export default async function DownloadPage({
 
                                     <span className="rounded-lg bg-zinc-800 px-3 py-1 text-xs font-semibold">
 
-                                        v{item.version}
+                                        {displayVersion(item.version)}
 
                                     </span>
 

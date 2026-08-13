@@ -6,40 +6,21 @@ export const dynamic = "force-dynamic";
 
 import Hero from "@/components/Hero";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
+import { displayVersion } from "@/lib/game-utils";
 import { supabase } from "@/lib/supabase";
-import Breadcrumb from "@/components/Breadcrumb";
 
 export default async function Home() {
 
-  // ================= DATA FETCHING =================
-  const { data: heroGame } = await supabase
-    .from("games")
-    .select("*")
-    .order("downloads", { ascending: false })
-    .limit(1)
-    .single();
+  // These independent requests start together, shortening the homepage wait time.
+  const [latestResponse, popularResponse, trendingResponse] = await Promise.all([
+    supabase.from("games").select("*").order("updated_at", { ascending: false }).limit(6),
+    supabase.from("games").select("*").eq("popular", true).limit(6),
+    supabase.from("games").select("*").eq("trending", true).limit(6),
+  ]);
 
-  const { data: latestGames } = await supabase
-    .from("games")
-    .select("*")
-    .order("updated_at", { ascending: false })
-    .limit(6);
-
-  const { data: popularGames } = await supabase
-    .from("games")
-    .select("*")
-    .eq("popular", true)
-    .limit(6);
-
-  const { data: trendingGames } = await supabase
-    .from("games")
-    .select("*")
-    .eq("trending", true)
-    .limit(6);
-
-  const { count: totalGames } = await supabase
-    .from("games")
-    .select("*", { count: "exact", head: true });
+  const latestGames = latestResponse.data;
+  const popularGames = popularResponse.data;
+  const trendingGames = trendingResponse.data;
 
   return (
     <>
@@ -128,7 +109,7 @@ export default async function Home() {
 
                       <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                        v{game.version}
+                        {displayVersion(game.version)}
 
                       </span>
 
@@ -245,7 +226,7 @@ export default async function Home() {
 
                       <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                        v{game.version}
+                        {displayVersion(game.version)}
 
                       </span>
 
@@ -370,7 +351,7 @@ export default async function Home() {
 
                       <span className="rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-300">
 
-                        v{game.version}
+                        {displayVersion(game.version)}
 
                       </span>
 

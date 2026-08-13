@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MODVerse
 
-## Getting Started
+MODVerse is a Next.js website for discovering Android game releases, game details, and download information.
 
-First, run the development server:
+## Local setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Install dependencies:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   npm ci
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Create a local environment file from the example:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   cp .env.example .env.local
+   ```
 
-## Learn More
+3. Add the public Supabase URL and anon key from the Supabase project to `.env.local`.
 
-To learn more about Next.js, take a look at the following resources:
+   `SUPPORT_EMAIL` is optional. When set, it appears as a clickable contact address on the Contact page. Do not commit `.env.local` or any secret keys.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Run the development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+5. Validate before deployment:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npx tsc --noEmit
+   npm run lint
+   npm run build
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+- `npm run dev` — start the local development server
+- `npm run build` — create a production build
+- `npm run start` — serve the production build
+- `npm run lint` — run Biome checks
+- `npm run format` — format the codebase with Biome
+
+## Deployment checklist
+
+- Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the hosting environment.
+- Set `SUPPORT_EMAIL` once the support inbox is ready.
+- Verify the generated `/sitemap.xml`, `/robots.txt`, contact page, game search, and a download page after deployment.
+- Keep Supabase Row Level Security enabled and restrict administrative write access to authorized users only.

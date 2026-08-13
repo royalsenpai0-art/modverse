@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+    title: "Recently Updated MOD APK Games",
+    description: "Browse recently updated MOD APK games, versions, and Android release details.",
+    alternates: { canonical: "/recently-updated" },
+};
 
 export default async function RecentlyUpdatedPage() {
 
@@ -224,6 +232,7 @@ export default async function RecentlyUpdatedPage() {
 
             </main>
 
+            <Footer />
         </>
 
     );

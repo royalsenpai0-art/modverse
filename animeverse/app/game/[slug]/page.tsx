@@ -6,10 +6,10 @@ import Footer from "@/components/Footer";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
 import type { Metadata } from "next";
 import ShareButtons from "@/components/ShareButton";
-import Breadcrumb from "@/components/Breadcrumb";
 import { supabase } from "@/lib/supabase";
 import ViewCounter from "@/components/ViewCounter";
-import increaseDownload from "@/components/DownloadCounter";
+import { notFound } from "next/navigation";
+import { sanitizeRichContent, serializeJsonLd } from "@/lib/content-security";
 
 export async function generateMetadata({
     params,
@@ -84,21 +84,7 @@ export default async function GamePage({
         .single();
 
     if (!game) {
-
-        return (
-
-            <main className="flex min-h-screen items-center justify-center bg-[#090909] text-white">
-
-                <h1 className="text-3xl font-black">
-
-                    Game Not Found
-
-                </h1>
-
-            </main>
-
-        );
-
+        notFound();
     }
     const jsonLd = {
         "@context": "https://schema.org",
@@ -172,7 +158,7 @@ export default async function GamePage({
                     "text": game.faq4_answer,
                 },
             },
-        ],
+        ].filter((item) => item.name && item.acceptedAnswer.text),
     };
     const breadcrumbSchema = {
         "@context": "https://schema.org",
@@ -200,6 +186,7 @@ export default async function GamePage({
             },
         ],
     };
+    const sanitizedDescription = sanitizeRichContent(game.description);
     const categories = game.category
         ?.split(",")
         .map((c: string) => c.trim());
@@ -220,21 +207,24 @@ export default async function GamePage({
         <>
             <script
                 type="application/ld+json"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: The object is serialized with script-closing characters escaped.
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(jsonLd),
+                    __html: serializeJsonLd(jsonLd),
                 }}
             />
 
             <script
                 type="application/ld+json"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: The object is serialized with script-closing characters escaped.
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(faqSchema),
+                    __html: serializeJsonLd(faqSchema),
                 }}
             />
             <script
                 type="application/ld+json"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: The object is serialized with script-closing characters escaped.
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(breadcrumbSchema),
+                    __html: serializeJsonLd(breadcrumbSchema),
                 }}
             />
             <Header />
@@ -909,8 +899,9 @@ export default async function GamePage({
 
                         <div
                             className="prose prose-invert max-w-none prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-p:text-zinc-300 prose-p:leading-8 prose-strong:text-white prose-a:text-orange-500"
+                            // biome-ignore lint/security/noDangerouslySetInnerHtml: Public rich text is sanitized before rendering.
                             dangerouslySetInnerHTML={{
-                                __html: game.description || "",
+                                __html: sanitizedDescription,
                             }}
                         />
                         {/* Tags */}

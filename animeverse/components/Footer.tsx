@@ -77,11 +77,11 @@ export default function Footer() {
                                 Trending
                             </Link>
 
-                            <Link href="/popular" className="block text-zinc-400 hover:text-orange-500">
+                            <Link href="/top-downloads" className="block text-zinc-400 hover:text-orange-500">
                                 Top Downloads
                             </Link>
 
-                            <Link href="/latest" className="block text-zinc-400 hover:text-orange-500">
+                            <Link href="/recently-updated" className="block text-zinc-400 hover:text-orange-500">
                                 Recently Updated
                             </Link>
 
