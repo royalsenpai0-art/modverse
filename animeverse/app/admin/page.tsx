@@ -111,11 +111,23 @@ interface Blog {
 
 }
 
+const tabs = [
+    { id: "games", label: "🎮 All Games", desc: "Uploaded games list" },
+    { id: "add-game", label: "➕ Upload / Edit Game", desc: "Game form, SEO & FAQ" },
+    { id: "blogs", label: "📝 All Blogs", desc: "Published blogs list" },
+    { id: "add-blog", label: "✍️ Write / Edit Blog", desc: "Blog editor" },
+] as const;
+
+type TabId = (typeof tabs)[number]["id"];
+
 export default function AdminPage() {
     const [games, setGames] = useState<Game[]>([]);
     const [editingGame, setEditingGame] = useState<Game | null>(null);
 
     const [search, setSearch] = useState("");
+
+    const [activeTab, setActiveTab] = useState<TabId>("games");
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
 
@@ -191,9 +203,6 @@ export default function AdminPage() {
     const [category, setCategory] = useState("");
     const [tags, setTags] = useState("");
 
-    useEffect(() => {
-        loadGames();
-    }, []);
     // =====================
     // DOWNLOAD LINKS
     // =====================
@@ -249,6 +258,7 @@ export default function AdminPage() {
 
     useEffect(() => {
         loadGames();
+        loadBlogs();
     }, []);
 
     const router = useRouter();
@@ -356,6 +366,7 @@ export default function AdminPage() {
 
         setBlogFeatured(blog.featured);
 
+        setActiveTab("add-blog");
         window.scrollTo({
             top: 0,
             behavior: "smooth",
@@ -620,12 +631,9 @@ export default function AdminPage() {
 
             alert("✅ Game Uploaded Successfully");
         }
-        useEffect(() => {
-            resetForm();
-            loadGames();
-            loadBlogs();
-
-        }, []);
+        resetForm();
+        loadGames();
+        loadBlogs();
     }
     // =====================
     // DELETE GAME
@@ -840,63 +848,147 @@ export default function AdminPage() {
         setFeatured(game.featured);
         setTrending(game.trending);
         setPopular(game.popular);
+
+        setActiveTab("add-game");
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     }
-    return (
-        <main className="min-h-screen bg-[#090909] text-white">
-
-            {/* Header */}
-
-            <div className="border-b border-zinc-800 bg-[#111111]">
-
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-
-                    <div>
-
-                        <h1 className="text-4xl font-black">
-
-                            🎮 MODVerse
-
-                        </h1>
-
-                        <p className="mt-2 text-zinc-400">
-
-                            Manage Games, SEO, Screenshots & Downloads
-
-                        </p>
-
-                    </div>
-
-                    <button
-                        onClick={resetForm}
-                        className="rounded-xl bg-orange-500 px-6 py-3 font-bold transition hover:bg-orange-600"
+    const sidebarNav = (
+        <nav className="flex-1 space-y-1.5 overflow-y-auto p-4">
+            {tabs.map((tab) => (
+                <button
+                    key={tab.id}
+                    onClick={() => {
+                        setActiveTab(tab.id);
+                        setSidebarOpen(false);
+                    }}
+                    className={`w-full rounded-xl px-4 py-3 text-left transition ${
+                        activeTab === tab.id
+                            ? "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg"
+                            : "text-zinc-300 hover:bg-zinc-800"
+                    }`}
+                >
+                    <span className="block font-bold">{tab.label}</span>
+                    <span
+                        className={`block text-xs ${
+                            activeTab === tab.id ? "text-white/80" : "text-zinc-500"
+                        }`}
                     >
+                        {tab.desc}
+                    </span>
+                </button>
+            ))}
+        </nav>
+    );
 
-                        + New Game
+    return (
+        <div className="flex min-h-screen bg-[#090909] text-white">
 
+            {/* ============ Desktop left sidebar ============ */}
+            <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-zinc-800 bg-[#0d0d0d] lg:flex">
+                <div className="border-b border-zinc-800 px-6 py-6">
+                    <h1 className="text-2xl font-black">
+                        🎮 <span className="text-orange-500">MOD</span>Verse
+                    </h1>
+                    <p className="mt-1 text-xs text-zinc-500">Admin Dashboard</p>
+                </div>
+
+                {sidebarNav}
+
+                <div className="border-t border-zinc-800 p-4 text-xs text-zinc-500">
+                    Manage Games, SEO, Screenshots & Downloads
+                </div>
+            </aside>
+
+            {/* ============ Mobile drawer ============ */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 z-40 bg-black/70 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+            <aside
+                className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-800 bg-[#0d0d0d] transition-transform duration-300 lg:hidden ${
+                    sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+                <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-5">
+                    <h1 className="text-xl font-black">
+                        🎮 <span className="text-orange-500">MOD</span>Verse
+                    </h1>
+                    <button
+                        onClick={() => setSidebarOpen(false)}
+                        className="rounded-lg border border-zinc-700 px-3 py-1.5"
+                        aria-label="Close menu"
+                    >
+                        ✕
                     </button>
-
                 </div>
 
-            </div>
+                {sidebarNav}
+            </aside>
 
-            <div className="mx-auto max-w-7xl px-6 py-10">
+            {/* ============ Main column ============ */}
+            <div className="min-w-0 flex-1">
+                {/* Topbar */}
+                <header className="sticky top-0 z-30 border-b border-zinc-800 bg-[#111111]/95 backdrop-blur">
+                    <div className="flex items-center justify-between gap-3 px-4 py-4 md:px-8">
+                        <div className="flex min-w-0 items-center gap-3">
+                            <button
+                                onClick={() => setSidebarOpen(true)}
+                                className="rounded-xl border border-zinc-700 p-2.5 lg:hidden"
+                                aria-label="Open menu"
+                            >
+                                ☰
+                            </button>
+                            <h2 className="truncate text-lg font-black md:text-2xl">
+                                {tabs.find((t) => t.id === activeTab)?.label}
+                            </h2>
+                        </div>
 
-                {/* Search */}
+                        <div className="flex shrink-0 gap-2">
+                            <button
+                                onClick={() => {
+                                    resetForm();
+                                    setActiveTab("add-game");
+                                }}
+                                className="rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-bold transition hover:bg-orange-600 md:px-6 md:py-3 md:text-base"
+                            >
+                                + New Game
+                            </button>
+                            <button
+                                onClick={() => {
+                                    resetBlogForm();
+                                    setActiveTab("add-blog");
+                                }}
+                                className="hidden rounded-xl bg-blue-600 px-6 py-3 font-bold transition hover:bg-blue-700 md:block"
+                            >
+                                + New Blog
+                            </button>
+                        </div>
+                    </div>
+                </header>
 
-                <div className="mb-8">
-
-                    <input
-                        type="text"
-                        placeholder="Search Games..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="h-14 w-full rounded-2xl border border-zinc-700 bg-[#111111] px-5 outline-none focus:border-orange-500"
-                    />
-
-                </div>
+                <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-10">
+                    {/* Search */}
+                    {activeTab === "games" && (
+                        <div className="mb-8">
+                            <input
+                                type="text"
+                                placeholder="Search Games..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="h-14 w-full rounded-2xl border border-zinc-700 bg-[#111111] px-5 outline-none focus:border-orange-500"
+                            />
+                        </div>
+                    )}
+                {/* ============ Blog form ============ */}
+                {activeTab === "add-blog" && (
                 <form
                     onSubmit={uploadBlog}
-                    className="mt-10 rounded-3xl border border-zinc-800 bg-[#111111] p-8"
+                    className="rounded-3xl border border-zinc-800 bg-[#111111] p-5 md:p-8"
                 >
 
                     <h2 className="mb-8 text-3xl font-black">
@@ -1046,8 +1138,11 @@ export default function AdminPage() {
                     </button>
 
                 </form>
+                )}
 
-                <div className="mt-12 rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+                {/* ============ Blogs list ============ */}
+                {activeTab === "blogs" && (
+                <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-5 md:p-8">
 
                     <h2 className="mb-8 text-3xl font-black">
                         📝 All Blogs
@@ -1123,8 +1218,10 @@ export default function AdminPage() {
                     </div>
 
                 </div>
-                {/* Form */}
+                )}
 
+                {/* ============ Game form ============ */}
+                {activeTab === "add-game" && (
                 <form
                     onSubmit={uploadGame}
                     className="space-y-8"
@@ -1774,10 +1871,11 @@ export default function AdminPage() {
 
                     </div>
                 </form>
+                )}
 
-                {/* Games List */}
-
-                <div className="mt-12 rounded-3xl border border-zinc-800 bg-[#111111] p-8">
+                {/* ============ Games list ============ */}
+                {activeTab === "games" && (
+                <div className="rounded-3xl border border-zinc-800 bg-[#111111] p-5 md:p-8">
 
                     <div className="mb-8 flex items-center justify-between">
 
@@ -1909,11 +2007,10 @@ export default function AdminPage() {
                     </div>
 
                 </div>
-
+                )}
+                </div>
             </div>
-
-        </main>
-
+        </div>
     );
 
 }

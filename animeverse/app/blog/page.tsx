@@ -3,6 +3,7 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
+import { stripHtml } from "@/lib/stripHtml";
 
 export default async function BlogPage() {
 
@@ -52,7 +53,7 @@ export default async function BlogPage() {
                                     </h2>
 
                                     <p className="mt-3 line-clamp-3 text-zinc-400">
-                                        {blog.short_description}
+                                        {stripHtml(blog.short_description)}
                                     </p>
 
                                     <div className="mt-5 flex items-center justify-between text-sm text-zinc-500">

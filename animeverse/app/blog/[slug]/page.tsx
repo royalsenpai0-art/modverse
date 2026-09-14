@@ -8,8 +8,10 @@ import WhatsAppSticky from "@/components/WhatsAppSticky";
 import BlogDownloadNotification from "@/components/BlogDownloadNotification";
 
 import { supabase } from "@/lib/supabase";
+import { stripHtml } from "@/lib/stripHtml";
 
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
     params,
@@ -57,19 +59,7 @@ export default async function BlogPage({
         .single();
 
     if (!blog) {
-
-        return (
-            <main className="flex min-h-screen items-center justify-center bg-[#090909] text-white">
-
-                <h1 className="text-4xl font-black">
-
-                    Blog Not Found
-
-                </h1>
-
-            </main>
-        );
-
+        notFound();
     }
 
     // Related Game
@@ -185,7 +175,7 @@ export default async function BlogPage({
 
                                     <p className="mt-3 line-clamp-3 text-zinc-400">
 
-                                        {item.short_description}
+                                        {stripHtml(item.short_description)}
 
                                     </p>
 
