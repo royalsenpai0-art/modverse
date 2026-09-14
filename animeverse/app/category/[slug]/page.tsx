@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
+import { stripHtml } from "@/lib/stripHtml";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -117,7 +118,7 @@ export default async function CategoryPage({
 
                                     <p className="mt-2 line-clamp-2 text-sm text-zinc-400">
 
-                                        {game.description}
+                                        {stripHtml(game.description)}
 
                                     </p>
 

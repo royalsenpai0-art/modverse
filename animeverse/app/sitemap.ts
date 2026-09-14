@@ -12,7 +12,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Sirf zaroori data lanes load ki ja rahi hain execution performance ko maintain karne ke liye
   const { data: games } = await supabase
     .from("games")
-    .select("slug, updated_at, image_url"); // Advanced tracking attributes shamil hain
+    .select("slug, updated_at");
+
+  const { data: blogs } = await supabase
+    .from("blogs")
+    .select("slug, updated_at");
 
   // Dynamic game information portals map configuration
   const gamePages =
@@ -49,6 +53,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/about`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.30 },
   ];
 
-  // Structural arrays optimization merge
-  return [...coreChannels, ...gamePages, ...downloadPages, ...legalTrustPortals];
+  const blogPages =
+    blogs?.map((blog) => ({
+      url: `${siteUrl}/blog/${blog.slug}`,
+      lastModified: blog.updated_at ? new Date(blog.updated_at) : new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })) || [];
+
+  return [...coreChannels, ...gamePages, ...downloadPages, ...blogPages, ...legalTrustPortals];
 }

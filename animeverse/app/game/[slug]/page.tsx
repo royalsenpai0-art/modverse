@@ -5,9 +5,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ShareButtons from "@/components/ShareButton";
 import Breadcrumb from "@/components/Breadcrumb";
 import { supabase } from "@/lib/supabase";
+import { stripHtml } from "@/lib/stripHtml";
 import ViewCounter from "@/components/ViewCounter";
 import increaseDownload from "@/components/DownloadCounter";
 
@@ -84,22 +86,9 @@ export default async function GamePage({
         .single();
 
     if (!game) {
-
-        return (
-
-            <main className="flex min-h-screen items-center justify-center bg-[#090909] text-white">
-
-                <h1 className="text-3xl font-black">
-
-                    Game Not Found
-
-                </h1>
-
-            </main>
-
-        );
-
+        notFound();
     }
+
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -386,7 +375,7 @@ export default async function GamePage({
                         </h2>
 
                         <p className="leading-8 text-zinc-300">
-                            {game.short_description}
+                            {stripHtml(game.short_description, 600)}
                         </p>
 
                     </div>

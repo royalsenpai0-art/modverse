@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import DownloadClient from "@/components/DownloadClient";
 import Header from "@/components/Header";
@@ -7,6 +9,47 @@ import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
 import increaseDownload from "@/components/DownloadCounter";
 import WhatsAppSticky from "@/components/WhatsAppSticky";
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+
+    const { data: game } = await supabase
+        .from("games")
+        .select("title, slug, seo_title, seo_description, banner")
+        .eq("slug", slug)
+        .single();
+
+    if (!game) {
+        return { title: "Download Not Found | MODVerse" };
+    }
+
+    const pageTitle =
+        game.seo_title || `${game.title} MOD APK Download for Android`;
+
+    return {
+        title: pageTitle,
+        description:
+            game.seo_description ||
+            `Download ${game.title} MOD APK latest version for Android with fast, safe and free download on MODVerse.`,
+        alternates: {
+            canonical: `https://modversepk.online/download/${game.slug}`,
+        },
+        openGraph: {
+            title: pageTitle,
+            description:
+                game.seo_description ||
+                `Download ${game.title} MOD APK latest version for Android on MODVerse.`,
+            url: `https://modversepk.online/download/${game.slug}`,
+            siteName: "MODVerse",
+            images: game.banner ? [{ url: game.banner }] : [],
+            type: "website",
+        },
+    };
+}
 
 export default async function DownloadPage({
     params,
@@ -22,18 +65,7 @@ export default async function DownloadPage({
         .single();
 
     if (!game) {
-        return (
-            <main className="flex min-h-screen items-center justify-center bg-[#090909] text-white">
-
-
-
-                <h1 className="text-3xl font-black">
-                    Download Not Found
-                </h1>
-            </main>
-        );
-
-
+        notFound();
     }
     const { data: relatedGames } = await supabase
         .from("games")
@@ -114,7 +146,7 @@ export default async function DownloadPage({
 
                             <span className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-semibold">
 
-                                Android {game.android_version}
+                                Android {game.android || game.android_version}
 
                             </span>
 
@@ -211,7 +243,7 @@ export default async function DownloadPage({
 
                             <h3 className="mt-2 font-bold">
 
-                                {game.android_version}
+                                {game.android || game.android_version}
 
                             </h3>
 
@@ -227,7 +259,9 @@ export default async function DownloadPage({
 
                             <h3 className="mt-2 break-words font-bold">
 
-                                {game.updated_at || "Latest"}
+                                {game.updated_at
+                                    ? new Date(game.updated_at).toLocaleDateString()
+                                    : "Latest"}
 
                             </h3>
 
